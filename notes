@@ -3,3 +3,5 @@ Equipment, User, Reservation, Category, Address, Review, ReservationStatus(Enum)
 
 relacje:
 User - Reservation, Equipment - Reservation, Category - Equipment, User - Address, Equipment - Review
+
+test
