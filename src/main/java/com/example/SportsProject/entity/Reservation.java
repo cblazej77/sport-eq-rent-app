@@ -1,4 +1,4 @@
-package com.example.SportsProject.entities;
+package com.example.SportsProject.entity;
 
 import com.example.SportsProject.enums.ReservationStatus;
 import jakarta.persistence.*;

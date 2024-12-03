@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Strona główna</title>
+</head>
+<body>
+<h2>Strona główna</h2>
+<a th:href="@{/categories}" class="btn btn-primary" th:text="#{add_equipment_btn}"></a>
+<ul>
+    <li th:each="category : ${categories}" th:text="${category.name}">Kategoria</li>
+</ul>
+</body>
+</html>

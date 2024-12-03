@@ -1,4 +1,4 @@
-package com.example.SportsProject.entities;
+package com.example.SportsProject.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
