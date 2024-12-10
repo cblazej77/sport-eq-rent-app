@@ -6,7 +6,26 @@
 </head>
 <body>
 <h2>Rejestracja</h2>
-<a th:href="@{/sign_in}" class="btn btn-primary">Masz już konto? Zaloguj się</a>
+<form th:action="@{/sign_up_action}" method="post">
+    <div>
+        <label th:text="#{name}"></label>
+        <input type="text" name="name">
+    </div>
+    <div>
+        <label th:text="#{surname}"></label>
+        <input type="text" name="surname">
+    </div>
+    <div>
+        <label th:text="#{email}"></label>
+        <input type="text" name="email">
+    </div>
+    <div>
+        <label th:text="#{password}"></label>
+        <input type="password" name="password">
+    </div>
+    <button type="submit" th:text="#{sign_up}"></button>
+</form>
+<a th:href="@{/sign_in}" class="btn btn-primary" th:text="#{sign_in_redirect}">Masz już konto? Zaloguj się</a>
 
 </body>
 </html>

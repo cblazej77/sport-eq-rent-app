@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Typy</title>
+</head>
+<body>
+<form th:action="@{/equipment_type_add}" method="post">
+    <div>
+        <label>Kategoria</label>
+        <input type="number" id="eq_cat" name="categoryID">
+        <label>Nazwa</label>
+        <input type="text" id="eq_name" name="name">
+        <label>Cena</label>
+        <input type="number" id="eq_price" name="price">
+        <button type="submit">Zapisz</button>
+    </div>
+
+</form>
+</body>
+</html>

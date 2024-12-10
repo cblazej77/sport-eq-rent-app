@@ -6,15 +6,17 @@
 </head>
 <body>
     <h2 th:text="#{sign_in_title}">Logowanie</h2>
+    <form th:action="@{sign_in_action}" method="post">
 <div>
-    <label th:text="#{username}">Login</label>
-    <input type="text" name="username">
+    <label th:text="#{username}">Email</label>
+    <input type="text" name="email">
 </div>
 <div>
     <label th:text="#{password}">Hasło</label>
     <input type="password" name="password">
 </div>
-<a th:href="@{/home}" class="btn btn-primary" th:text="#{log_in}">Zaloguj się</a>
+        <button type="submit" th:text="#{log_in}"></button>
+    </form>
     <div>
         <a th:href="@{/sign_up}" class="btn btn-primary" th:text="#{register_redirect_btn}">Nie masz konta? Zarejestruj się</a>
     </div>

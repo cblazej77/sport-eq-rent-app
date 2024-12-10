@@ -20,7 +20,7 @@ public class Equipment {
     private Long equipmentID;
 
     @ManyToOne
-    @JoinColumn(name = "equipmentTypeID")
+    @JoinColumn(name = "equipmentTypeID", nullable = false)
     private EquipmentType equipmentType;
 
     @OneToMany(mappedBy = "equipment")

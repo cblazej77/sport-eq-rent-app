@@ -18,21 +18,21 @@ public class Reservation {
     @Column(name = "reservationID")
     private Long reservationID;
 
-    @Column(name = "status")
+    @Column(name = "status", nullable = false)
     private ReservationStatus reservationStatus;
 
-    @Column(name = "startingDate")
+    @Column(name = "startingDate", nullable = false)
     private String startingDate;
 
-    @Column(name = "endingDate")
+    @Column(name = "endingDate", nullable = false)
     private String endingDate;
 
     @ManyToOne
-    @JoinColumn(name = "userID")
+    @JoinColumn(name = "userID", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "equipmentID")
+    @JoinColumn(name = "equipmentID", nullable = false)
     private Equipment equipment;
 
 }

@@ -20,15 +20,15 @@ public class Review {
     @Column(name = "text")
     private String text;
 
-    @Column(name = "rate")
+    @Column(name = "rate", nullable = false)
     private int rate;
 
     @ManyToOne
-    @JoinColumn(name = "userID")
+    @JoinColumn(name = "userID", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "equipmentTypeID")
+    @JoinColumn(name = "equipmentTypeID", nullable = false)
     private EquipmentType equipmentType;
 
 }

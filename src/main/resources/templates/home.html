@@ -7,8 +7,15 @@
 <body>
 <h2>Strona główna</h2>
 <a th:href="@{/categories}" class="btn btn-primary" th:text="#{add_equipment_btn}"></a>
+<a th:href="@{/equipment_types}" class="btn btn-primary" th:text="#{add_eq_type_btn}"></a>
 <ul>
-    <li th:each="category : ${categories}" th:text="${category.name}">Kategoria</li>
+    <li th:each="category : ${categories}" th:text="${category.name}"></li>
+</ul>
+<ul>
+    <li th:each="equipmentType : ${equipmentTypes}">
+        <label th:text="${equipmentType.name}"></label>
+        <label th:text="${equipmentType.price}"></label>
+    </li>
 </ul>
 </body>
 </html>

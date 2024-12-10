@@ -1,7 +1,7 @@
-/entities:
-Equipment, User, Reservation, Category, Address, Review, ReservationStatus(Enum)
-
-relacje:
-User - Reservation, Equipment - Reservation, Category - Equipment, User - Address, Equipment - Review
-
-test
+//TODO
+- tokens
+- admin view
+- password hashed with PBKDF2
+- input regexes
+- availability counter for equipment type
+- all layouts
