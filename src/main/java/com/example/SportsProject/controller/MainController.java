@@ -23,7 +23,7 @@ public class MainController {
 
     @GetMapping("/")
     public String index() {
-        return "redirect:/sign_in";
+        return "redirect:/categories";
     }
 
 //    @GetMapping("/home")

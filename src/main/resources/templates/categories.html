@@ -3,18 +3,55 @@
 <head>
   <meta charset="UTF-8">
   <title th:text="#{add_equipment_btn}"></title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
-<h2 th:text="#{add_equipment_btn}"></h2>
-<form th:action="@{/category_add}" method="post">
-  <div>
-    <label th:text="#{eq_name}"></label>
-    <input type="text" name="name">
+<div class="top-lane">
+  <div class="top-lane-section">
+    <h1 class="txt-white">Kategorie</h1>
+    <div class="nav-container">
+      <button>Kategorie</button>
+      <button>Moje rezerwacje</button>
+    </div>
   </div>
-  <button type="submit" th:text="#{add_equipment_btn}"></button>
-  <ul>
-    <li th:each="category: ${categories}" th:text="${category.name}"></li>
-  </ul>
-</form>
+</div>
+<div class="center-body">
+
+  <div class="category-container" onclick="showModal()">
+    <div class="plus-container">
+      <i class="bi bi-plus-lg plus-icon"></i>
+      <h2>Dodaj kategorię</h2>
+    </div>
+  </div>
+
+  <div th:each="category : ${categories}" class="category-container">
+    <label th:text="${category.name}"></label>
+  </div>
+</div>
+
+<div id="modal" class="modal-overlay" onclick="hideModal()">
+  <form th:action="@{/category_add}" method="post">
+    <div class="modal-window" onclick="event.stopPropagation();">
+      <div class="modal-image">
+      </div>
+      <input type="text" name="name" placeholder="Nazwa kategorii">
+      <button onclick="hideModal()">Dodaj kategorię</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  function showModal() {
+        const modal = document.getElementById('modal');
+        modal.classList.add('active');
+    }
+
+    function hideModal() {
+        const modal = document.getElementById('modal');
+        modal.classList.remove('active');
+    }
+</script>
+
 </body>
 </html>

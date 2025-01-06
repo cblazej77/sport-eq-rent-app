@@ -22,6 +22,9 @@ public class Category {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "image")
+    private byte[] image;
+
     @OneToMany(mappedBy = "category")
     private List<EquipmentType> equipmentTypeList;
 }

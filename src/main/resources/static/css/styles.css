@@ -1,0 +1,119 @@
+:root {
+    --primary: #e07a5f;
+    --secondary: #f4f1de;
+    --action: #0077B6;
+    --black: #494947;
+    --white: #FAFAFA;
+    --gray: #C1C1C1;
+}
+
+body {
+    margin: 0px;
+    padding: 0px;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--white);
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+h1 {
+    margin: 0px;
+    text-weight: bold;
+    font-size: 32px;
+}
+
+h2 {
+    text-weight: normal;
+    color: var(--gray);
+}
+
+.txt-white {
+    color: var(--white);
+}
+
+.top-lane {
+    display: flex;
+    justify-content: center;
+    width: 100vw;
+    height: 100px;
+    margin: 0px;
+    background-color: var(--primary);
+}
+
+.top-lane-section {
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
+    width: 1200px;
+    height: 100%;
+}
+
+.center-body {
+    width: 1220px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.nav-container {
+    padding: 5px 0;
+}
+
+.category-container {
+    display: flex;
+    width: 385px;
+    height: 300px;
+    background-color: var(--secondary);
+    margin: 10px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+}
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-window {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--white);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.plus-icon {
+    font-size: 64px;
+    color: var(--gray);
+    text-align: center;
+}
+
+.plus-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-image {
+    width: 500px;
+    height: 550px;
+    background-color: var(--action);
+}

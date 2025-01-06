@@ -27,8 +27,8 @@ public class CategoryController {
     }
 
     @PostMapping("/category_add")
-    public String addCategory(Category category) {
-        categoryService.categoryAdd(category);
+    public String addCategory(String name) {
+        categoryService.categoryAdd(name);
         return "redirect:/categories";
     }
 }
