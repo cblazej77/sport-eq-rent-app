@@ -1,9 +1,9 @@
 //TODO
-- tokens
-- admin view
-- password hashed with PBKDF2
+- tokens    DONE
+- admin account    DONE
+- password hashed with PBKDF2   DONE
 - input regexes
-- availability counter for equipment type
+- availability counter for equipment
 - all layouts
-- sign up with Google
 - email confirmation
+- bean validation with own annotations

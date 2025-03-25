@@ -12,9 +12,9 @@
     <li th:each="category : ${categories}" th:text="${category.name}"></li>
 </ul>
 <ul>
-    <li th:each="equipmentType : ${equipmentTypes}">
-        <label th:text="${equipmentType.name}"></label>
-        <label th:text="${equipmentType.price}"></label>
+    <li th:each="equipment : ${equipment}">
+        <label th:text="${equipment.name}"></label>
+        <label th:text="${equipment.price}"></label>
     </li>
 </ul>
 </body>

@@ -8,7 +8,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Getter
 @Setter
 @NoArgsConstructor
-public class EquipmentAddDTO {
+public class EquipmentEditDTO {
+    private Long equipmentID;
     private String name;
     private String description;
     private float price;

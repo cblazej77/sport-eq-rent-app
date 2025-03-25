@@ -26,5 +26,5 @@ public class Category {
     private byte[] image;
 
     @OneToMany(mappedBy = "category")
-    private List<EquipmentType> equipmentTypeList;
+    private List<Equipment> equipmentList;
 }

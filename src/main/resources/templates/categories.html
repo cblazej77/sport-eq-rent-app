@@ -15,42 +15,130 @@
       <button>Moje rezerwacje</button>
     </div>
   </div>
+  <div class="top-lane-account">
+    <div th:if="${user != null}">
+      <span th:text="${user.username}"></span>
+      <span th:text="${user.authorities[0].authority}"></span>
+      <a th:href="@{/logout}" class="btn btn-danger">Wyloguj się</a>
+    </div>
+    <a th:if="${user == null}" th:href="@{/sign_in}" class="btn btn-primary">Zaloguj się</a>
+  </div>
 </div>
 <div class="center-body">
 
-  <div class="category-container" onclick="showModal()">
-    <div class="plus-container">
-      <i class="bi bi-plus-lg plus-icon"></i>
-      <h2>Dodaj kategorię</h2>
+    <div th:if="${user != null and user.authorities[0].authority == 'ROLE_ADMIN'}" class="category-container" onclick="showModal(null)">
+      <div class="plus-container">
+        <i class="bi bi-plus-lg plus-icon"></i>
+        <h2>Dodaj kategorię</h2>
+      </div>
     </div>
-  </div>
 
   <div th:each="category : ${categories}" class="category-container">
-    <label th:text="${category.name}"></label>
+    <div th:href="@{/category/{id}/equipment(id=${category.categoryID})}">
+      <label th:text="${category.name}"></label>
+      <img th:src="@{/category/image/{id}(id=${category.categoryID})}" alt="Category Image" style="width: 100px; height: 100px;"/>
+      <a th:href="@{/category/{id}/equipment(id=${category.categoryID})}">Zobacz wyposażenie</a>
+      <a th:if="${user != null and user.authorities[0].authority == 'ROLE_ADMIN'}"
+         th:data-id="${category.categoryID}"
+         th:data-name="${category.name}"
+         th:data-image="@{/category/image/{id}(id=${category.categoryID})}"
+         onclick="showModal(this)">
+        Edytuj
+      </a>
+    </div>
   </div>
 </div>
 
 <div id="modal" class="modal-overlay" onclick="hideModal()">
-  <form th:action="@{/category_add}" method="post">
+  <form id="categoryForm" enctype="multipart/form-data">
+    <input type="hidden" id="hiddenMethod" name="_method" value="PUT">
     <div class="modal-window" onclick="event.stopPropagation();">
-      <div class="modal-image">
+
+      <h2 id="modal-title">Edytuj kategorię</h2>
+
+      <input type="hidden" id="categoryID" name="categoryID">
+
+      <div class="modal-image" onclick="triggerFileInput()">
+        <p>Kliknij, aby zmienić obrazek</p>
+        <img id="preview" style="display: none; max-width: 100%; max-height: 150px;" />
       </div>
-      <input type="text" name="name" placeholder="Nazwa kategorii">
-      <button onclick="hideModal()">Dodaj kategorię</button>
+
+      <input type="file" id="fileInput" name="image" accept="image/*" style="display: none;" onchange="previewImage(event)">
+
+      <input type="text" id="categoryName" name="name" placeholder="Nazwa kategorii">
+
+      <button id="saveButton" type="submit">Zapisz zmiany</button>
+      <button id="deleteButton" type="submit">Usuń</button>
+      <button type="button" onclick="hideModal()">Anuluj</button>
     </div>
   </form>
 </div>
 
 <script>
-  function showModal() {
-        const modal = document.getElementById('modal');
-        modal.classList.add('active');
-    }
+  function showModal(element) {
+      const modalTitle = document.getElementById('modal-title');
+      const categoryIdField = document.getElementById('categoryID');
+      const categoryNameField = document.getElementById('categoryName');
+      const preview = document.getElementById('preview');
+      const saveButton = document.getElementById('saveButton');
+      const deleteButton = document.getElementById('deleteButton');
+      const form = document.getElementById('categoryForm');
+      const hiddenMethod = document.getElementById('hiddenMethod');
+
+      if (element != null) {
+          // Tryb edycji
+          console.log(element);
+          const categoryID = element.getAttribute("data-id");
+          const categoryName = element.getAttribute("data-name");
+          const categoryImage = element.getAttribute("data-image");
+
+          categoryIdField.value = categoryID;
+          categoryNameField.value = categoryName;
+          preview.src = categoryImage;
+          preview.style.display = 'block';
+
+          modalTitle.innerText = "Edytuj kategorię";
+          saveButton.innerText = "Zapisz zmiany";
+          form.action = "/category_edit";
+          hiddenMethod.value = "PUT";
+      } else {
+          // Tryb dodawania
+          categoryIdField.value = "";
+          categoryNameField.value = "";
+          preview.style.display = 'none';
+
+          modalTitle.innerText = "Dodaj kategorię";
+          saveButton.innerText = "Dodaj kategorię";
+          form.action = "/category_add";
+          form.method = "POST";
+          hiddenMethod.value = "POST";
+      }
+
+      document.getElementById('modal').classList.add('active');
+  }
 
     function hideModal() {
         const modal = document.getElementById('modal');
         modal.classList.remove('active');
     }
+
+    function triggerFileInput() {
+      document.getElementById('fileInput').click();
+    }
+
+  function previewImage(event) {
+    const file = event.target.files[0];
+    const preview = document.getElementById('preview');
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+  }
 </script>
 
 </body>

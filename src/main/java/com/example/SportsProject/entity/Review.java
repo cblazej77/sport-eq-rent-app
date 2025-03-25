@@ -29,6 +29,6 @@ public class Review {
 
     @ManyToOne
     @JoinColumn(name = "equipmentTypeID", nullable = false)
-    private EquipmentType equipmentType;
+    private Equipment equipment;
 
 }

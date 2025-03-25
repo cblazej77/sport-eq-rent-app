@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Wyposażenie - [[${categoryName}]]</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div class="top-lane">
+  <div class="top-lane-section">
+    <h1 class="txt-white">Wyposażenie</h1>
+    <div class="nav-container">
+      <a th:href="@{/categories}" class="btn btn-primary">Kategorie</a>
+      <button>Moje rezerwacje</button>
+    </div>
+  </div>
+  <div class="top-lane-account">
+    <a th:href="@{/sign_in}" class="btn btn-primary">Zaloguj się</a>
+  </div>
+</div>
+<div class="center-body">
+    <div class="filter-body">Filtry</div>
+    <div class="equipment-body">
+        <div th:if="${user != null and user.authorities[0].authority == 'ROLE_ADMIN'}" class="equipment-container" onclick="showModal(null)">
+            <a>
+                Dodaj wyposażenie
+            </a>
+        </div>
+
+        <div th:each="equipment : ${equipmentList}" class="equipment-container">
+            <div>
+                <h3 th:text="${equipment.name}"></h3>
+                <p th:text="${equipment.price}"></p>
+            </div>
+            <a th:if="${user != null and user.authorities[0].authority == 'ROLE_ADMIN'}"
+               th:data-id="${equipment.equipmentID}"
+               th:data-name="${equipment.name}"
+               th:data-description="${equipment.description}"
+               th:data-price="${equipment.price}"
+               th:data-quantity="${equipment.quantity}"
+               th:data-image="@{/equipment/image/{id}(id=${equipment.equipmentID})}"
+               onclick="showModal(this)">
+                Edytuj
+            </a>
+        </div>
+    </div>
+</div>
+
+<div id="modal" class="modal-overlay" onclick="hideModal()">
+    <form id="equipmentForm" enctype="multipart/form-data" method="POST">
+        <input type="hidden" id="hiddenMethod" name="_method" value="POST">
+        <div class="modal-window" onclick="event.stopPropagation();">
+            <h2 id="modal-title">Edytuj wyposażenie</h2>
+
+            <div class="modal-image" onclick="triggerFileInput()">
+                <p>Kliknij, aby zmienić obrazek</p>
+                <img id="preview" style="display: none; max-width: 100%; max-height: 150px;" />
+            </div>
+
+            <input type="file" id="fileInput" name="image" accept="image/*" style="display: none;" onchange="previewImage(event)">
+            <input type="text" id="equipmentName" name="name" placeholder="Nazwa wyposażenia">
+            <input type="text" id="equipmentDescription" name="description" placeholder="Opis wyposażenia">
+            <input type="number" id="equipmentPrice" name="price" placeholder="Cena za wypożyczenie na dzień">
+            <input type="number" id="equipmentQuantity" name="quantity" placeholder="Ilość dostępnych sztuk">
+            <input type="hidden" id="categoryID" name="categoryID" th:value="${categoryID}">
+            <input type="hidden" id="equipmentID" name="equipmentID">
+
+            <button id="addButton" type="submit">Zapisz</button>
+            <button type="button" onclick="hideModal()">Anuluj</button>
+        </div>
+    </form>
+</div>
+
+<script>
+  function showModal(element) {
+      const modalTitle = document.getElementById('modal-title');
+      const equipmentForm = document.getElementById('equipmentForm');
+      const hiddenMethod = document.getElementById('hiddenMethod');
+      const addButton = document.getElementById('addButton');
+      const preview = document.getElementById('preview');
+      const equipmentIDField = document.getElementById('equipmentID');
+      const equipmentNameField = document.getElementById('equipmentName');
+      const equipmentDescriptionField = document.getElementById('equipmentDescription');
+      const equipmentPriceField = document.getElementById('equipmentPrice');
+      const equipmentQuantityField = document.getElementById('equipmentQuantity');
+      const categoryIDField = document.getElementById('categoryID');
+
+      if (element != null) {
+        console.log(element);
+        const equipmentID = element.getAttribute("data-id");
+        const name = element.getAttribute("data-name");
+        const description = element.getAttribute("data-description");
+        const price = element.getAttribute("data-price");
+        const quantity = element.getAttribute("data-quantity");
+        const image = element.getAttribute("data-image");
+
+        equipmentIDField.value = equipmentID;
+        equipmentNameField.value = name;
+        equipmentDescriptionField.value = description;
+        equipmentPriceField.value = price;
+        equipmentQuantityField.value = quantity;
+        categoryIDField.value = equipmentID;
+        preview.src = image;
+        preview.style.display = 'block';
+
+        modalTitle.innerText = "Edytuj sprzęt";
+        addButton.innerText = "Zapisz zmiany"
+        equipmentForm.action = "/equipment_edit";
+        hiddenMethod.value = "PUT";
+
+      } else {
+        console.log("null")
+        equipmentForm.action = "/equipment_add";
+        equipmentForm.method = "POST";
+        hiddenMethod.value = "POST";
+      }
+
+      document.getElementById('modal').classList.add('active');
+  }
+
+  function hideModal() {
+        const modal = document.getElementById('modal');
+        modal.classList.remove('active');
+  }
+
+  function triggerFileInput() {
+      document.getElementById('fileInput').click();
+  }
+
+  function previewImage(event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById('preview');
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+        }
+  }
+</script>
+
+</body>
+</html>

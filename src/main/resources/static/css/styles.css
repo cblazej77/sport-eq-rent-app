@@ -46,8 +46,15 @@ h2 {
     display: flex;
     justify-content: flex-end;
     flex-direction: column;
-    width: 1200px;
+    width: 1100px;
     height: 100%;
+}
+
+.top-lane-account {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .center-body {
@@ -116,4 +123,32 @@ h2 {
     width: 500px;
     height: 550px;
     background-color: var(--action);
+}
+
+.filter-body {
+    width: 385px;
+    height: 100px;
+    border: 2px solid var(--gray);
+    border-radius: 10px;
+    margin: 10px;
+}
+
+.equipment-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.equipment-container {
+    display: flex;
+    width: 770px;
+    height: 300px;
+    margin: 10px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    border: 2px solid var(--gray);
+    border-radius: 10px;
 }

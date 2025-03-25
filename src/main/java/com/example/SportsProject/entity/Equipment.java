@@ -19,9 +19,24 @@ public class Equipment {
     @Column(name = "equipmentID")
     private Long equipmentID;
 
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @Column(name = "description", nullable = false)
+    private String description;
+
+    @Column(name = "price", nullable = false)
+    private float price;
+
+    @Column(name = "image")
+    private byte[] image;
+
+    @Column(name = "quantity", nullable = false)
+    private int quantity;
+
     @ManyToOne
-    @JoinColumn(name = "equipmentTypeID", nullable = false)
-    private EquipmentType equipmentType;
+    @JoinColumn(name = "categoryID", nullable = false)
+    private Category category;
 
     @OneToMany(mappedBy = "equipment")
     private List<Reservation> reservationList;

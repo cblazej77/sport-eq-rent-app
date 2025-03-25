@@ -21,11 +21,13 @@ public class Reservation {
     @Column(name = "status", nullable = false)
     private ReservationStatus reservationStatus;
 
-    @Column(name = "startingDate", nullable = false)
-    private String startingDate;
+    // Data utworzenia rezerwacji
+    @Column(name = "reservationDate", nullable = false)
+    private String reservationDate;
 
-    @Column(name = "endingDate", nullable = false)
-    private String endingDate;
+    // Data, kiedy klient odbiera sprzęt
+    @Column(name = "pickup_date", nullable = false)
+    private String pickup_date;
 
     @ManyToOne
     @JoinColumn(name = "userID", nullable = false)
