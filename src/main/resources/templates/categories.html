@@ -34,24 +34,30 @@
     </div>
 
   <div th:each="category : ${categories}" class="category-container">
-    <div th:href="@{/category/{id}/equipment(id=${category.categoryID})}">
+    <div th:href="@{/categories/{id}(id=${category.categoryID})}">
       <label th:text="${category.name}"></label>
-      <img th:src="@{/category/image/{id}(id=${category.categoryID})}" alt="Category Image" style="width: 100px; height: 100px;"/>
-      <a th:href="@{/category/{id}/equipment(id=${category.categoryID})}">Zobacz wyposażenie</a>
+      <img th:src="@{/categories/image/{id}(id=${category.categoryID})}" alt="Category Image" style="width: 100px; height: 100px;"/>
+      <a th:href="@{/categories/{id}(id=${category.categoryID})}">Zobacz wyposażenie</a>
       <a th:if="${user != null and user.authorities[0].authority == 'ROLE_ADMIN'}"
          th:data-id="${category.categoryID}"
          th:data-name="${category.name}"
-         th:data-image="@{/category/image/{id}(id=${category.categoryID})}"
+         th:data-image="@{/categories/image/{id}(id=${category.categoryID})}"
          onclick="showModal(this)">
         Edytuj
       </a>
+      <form method="post" th:action="@{/categories/delete/{id}(id=${category.categoryID})}" th:if="${user != null and user.authorities[0].authority == 'ROLE_ADMIN'}">
+        <input type="hidden" name="_method" value="DELETE">
+        <div>
+          <button type="submit">Usuń</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
 
 <div id="modal" class="modal-overlay" onclick="hideModal()">
-  <form id="categoryForm" enctype="multipart/form-data">
-    <input type="hidden" id="hiddenMethod" name="_method" value="PUT">
+  <form id="categoryForm" enctype="multipart/form-data" method="POST">
+    <input type="hidden" id="hiddenMethod" name="_method" value="POST">
     <div class="modal-window" onclick="event.stopPropagation();">
 
       <h2 id="modal-title">Edytuj kategorię</h2>
@@ -68,7 +74,6 @@
       <input type="text" id="categoryName" name="name" placeholder="Nazwa kategorii">
 
       <button id="saveButton" type="submit">Zapisz zmiany</button>
-      <button id="deleteButton" type="submit">Usuń</button>
       <button type="button" onclick="hideModal()">Anuluj</button>
     </div>
   </form>
@@ -99,7 +104,7 @@
 
           modalTitle.innerText = "Edytuj kategorię";
           saveButton.innerText = "Zapisz zmiany";
-          form.action = "/category_edit";
+          form.action = "/categories/edit";
           hiddenMethod.value = "PUT";
       } else {
           // Tryb dodawania
@@ -109,7 +114,7 @@
 
           modalTitle.innerText = "Dodaj kategorię";
           saveButton.innerText = "Dodaj kategorię";
-          form.action = "/category_add";
+          form.action = "/categories/add";
           form.method = "POST";
           hiddenMethod.value = "POST";
       }

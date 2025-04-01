@@ -1,21 +1,22 @@
 package com.example.SportsProject.service;
 
 import com.example.SportsProject.entity.Category;
+import com.example.SportsProject.entity.Equipment;
 import com.example.SportsProject.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CategoryService {
     private final CategoryRepository categoryRepository;
+    private final EquipmentService equipmentService;
 
-    public CategoryService(CategoryRepository categoryRepository) {
+    public CategoryService(CategoryRepository categoryRepository, EquipmentService equipmentService) {
         this.categoryRepository = categoryRepository;
+        this.equipmentService = equipmentService;
     }
 
     public List<Category> getAllCategories() {
@@ -50,14 +51,18 @@ public class CategoryService {
         return categoryRepository.save(category);
     }
 
-//    public Category categoryDelete(Long categoryID) {
-//        Category category = categoryRepository.getReferenceById(categoryID);
-//
-//
-//    }
+    public void categoryDelete(Long categoryID) {
+        Category category = categoryRepository.getReferenceById(categoryID);
+        List<Equipment> equipmentList = category.getEquipmentList();
+
+        for (Equipment equipment : equipmentList) {
+            equipmentService.equipmentDelete(equipment.getEquipmentID());
+        }
+
+        categoryRepository.deleteById(categoryID);
+    }
 
     public Category getCategoryById(Long id) {
-        System.out.println("Long id: " + id);
         return categoryRepository.findCategoryByCategoryID(id);
     }
 }

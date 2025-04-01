@@ -61,6 +61,10 @@ public class EquipmentService {
         return equipmentRepository.save(equipment);
     }
 
+    public void equipmentDelete(Long equipmentID) {
+        equipmentRepository.deleteById(equipmentID);
+    }
+
     public List<Equipment> getEquipmentByCategory(Long categoryID) {
         return equipmentRepository.findByCategory_CategoryID(categoryID);
     }

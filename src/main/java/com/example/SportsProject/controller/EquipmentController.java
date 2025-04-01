@@ -29,29 +29,21 @@ public class EquipmentController {
     @PostMapping("/equipment_add")
     public String equipmentAdd(EquipmentAddDTO equipmentAddDTO) throws IOException {
         equipmentService.equipmentAdd(equipmentAddDTO);
-        return "redirect:/categories";
+        return "redirect:/categories/" + equipmentAddDTO.getCategoryID();
     }
 
     @PutMapping("/equipment_edit")
     public String equipmentEdit(@ModelAttribute EquipmentEditDTO equipmentEditDTO) throws IOException {
-        System.out.println(equipmentEditDTO.getEquipmentID());
-        System.out.println(equipmentEditDTO.getCategoryID());
-        System.out.println(equipmentEditDTO.getName());
-        System.out.println(equipmentEditDTO.getDescription());
-        System.out.println(equipmentEditDTO.getPrice());
         equipmentService.equipmentEdit(equipmentEditDTO);
-        return "redirect:/categories";
+        return "redirect:/categories/" + equipmentEditDTO.getCategoryID();
     }
 
-    @PostMapping("/equipment_type_add")
-    public String equipmentTypeAdd(EquipmentAddDTO equipmentAddDTO, Model model) {
-        equipmentService.equipmentTypeAdd(equipmentAddDTO);
-        return "equipment_types";
-    }
+    @DeleteMapping("/equipment_delete/{equipmentID}")
+    public String equipmentDelete(@PathVariable Long equipmentID){
+        Long categoryID = equipmentRepository.getEquipmentByEquipmentID(equipmentID).getCategory().getCategoryID();
+        equipmentService.equipmentDelete(equipmentID);
 
-    @GetMapping("/equipment_types")
-    public String equipmentTypes() {
-        return "equipment_types";
+        return "redirect:/categories/" + categoryID;
     }
 
     @GetMapping("/equipment/image/{equipmentID}")

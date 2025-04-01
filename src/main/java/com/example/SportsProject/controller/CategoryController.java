@@ -17,6 +17,7 @@ import java.sql.SQLOutput;
 import java.util.List;
 
 @Controller
+@RequestMapping("/categories")
 public class CategoryController {
     private final CategoryService categoryService;
     private final CategoryRepository categoryRepository;
@@ -28,7 +29,7 @@ public class CategoryController {
         this.equipmentService = equipmentService;
     }
 
-    @GetMapping("/categories")
+    @GetMapping
     public String categories(Model model) {
         model.addAttribute("categories", categoryService.getAllCategories());
 
@@ -41,45 +42,37 @@ public class CategoryController {
         return "categories";
     }
 
-    @GetMapping("/category/image/{categoryID}")
+    @GetMapping("/image/{categoryID}")
     @ResponseBody
     public byte[] getImage(@PathVariable Long categoryID) {
         Category category = categoryService.getCategoryById(categoryID);
         return category.getImage();
     }
 
-    @PostMapping("/category_add")
+    @PostMapping("/add")
     public String addCategory(@RequestParam String name, @RequestParam MultipartFile image) {
         categoryService.categoryAdd(name, image);
         return "redirect:/categories";
     }
 
-    @PutMapping("/category_edit")
+    @PutMapping("/edit")
     public String editCategory(@RequestParam Long categoryID, @RequestParam String name, @RequestParam MultipartFile image) {
         categoryService.categoryEdit(categoryID, name, image);
         return "redirect:/categories";
     }
 
-//    @PostMapping("/category_delete")
-//    public String deleteCategory(@RequestParam Long categoryID) {
-//        categoryService.categoryDelete(categoryID);
-//        return  "redirect:/categories";
-//    }
-
-    @GetMapping("/categories/{name}")
-    public String openCategory(@PathVariable String name) {
-        return "redirect:/categories/{name}";
+    @DeleteMapping("/delete/{categoryID}")
+    public String deleteCategory(@PathVariable Long categoryID) {
+        categoryService.categoryDelete(categoryID);
+        return  "redirect:/categories";
     }
 
-    @GetMapping("/category/{categoryID}/equipment")
+    @GetMapping("/{categoryID}")
     public String getEquipmentByCategory(@PathVariable Long categoryID, Model model) {
-        // Pobieranie kategorii
         Category category = categoryService.getCategoryById(categoryID);
 
-        // Pobieranie wyposażenia dla danej kategorii
         List<Equipment> equipment = equipmentService.getEquipmentByCategory(categoryID);
 
-        // Dodanie danych do modelu
         model.addAttribute("categoryID", categoryID);
         model.addAttribute("categoryName", category.getName());
         model.addAttribute("equipmentList", equipment);

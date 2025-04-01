@@ -42,6 +42,12 @@
                onclick="showModal(this)">
                 Edytuj
             </a>
+            <form method="post" th:action="@{/equipment_delete/{id}(id=${equipment.equipmentID})}" th:if="${user != null and user.authorities[0].authority == 'ROLE_ADMIN'}">
+                <input type="hidden" name="_method" value="DELETE">
+                <div>
+                    <button type="submit">Usuń</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
