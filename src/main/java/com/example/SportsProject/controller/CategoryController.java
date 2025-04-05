@@ -2,7 +2,9 @@ package com.example.SportsProject.controller;
 
 import com.example.SportsProject.entity.Category;
 import com.example.SportsProject.entity.Equipment;
+import com.example.SportsProject.entity.User;
 import com.example.SportsProject.repository.CategoryRepository;
+import com.example.SportsProject.repository.UserRepository;
 import com.example.SportsProject.service.CategoryService;
 import com.example.SportsProject.service.EquipmentService;
 import org.springframework.security.core.Authentication;
@@ -22,11 +24,13 @@ public class CategoryController {
     private final CategoryService categoryService;
     private final CategoryRepository categoryRepository;
     private final EquipmentService equipmentService;
+    private final UserRepository userRepository;
 
-    public CategoryController(CategoryService categoryService, CategoryRepository categoryRepository, EquipmentService equipmentService) {
+    public CategoryController(CategoryService categoryService, CategoryRepository categoryRepository, EquipmentService equipmentService, UserRepository userRepository) {
         this.categoryService = categoryService;
         this.categoryRepository = categoryRepository;
         this.equipmentService = equipmentService;
+        this.userRepository = userRepository;
     }
 
     @GetMapping
@@ -36,7 +40,8 @@ public class CategoryController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof UserDetails) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            model.addAttribute("user", userDetails);
+            User user = userRepository.findUserByEmail(userDetails.getUsername());
+            model.addAttribute("user", user);
         }
 
         return "categories";
@@ -79,7 +84,8 @@ public class CategoryController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof UserDetails) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            model.addAttribute("user", userDetails);
+            User user = userRepository.findUserByEmail(userDetails.getUsername());
+            model.addAttribute("user", user);
         }
 
         return "equipment";

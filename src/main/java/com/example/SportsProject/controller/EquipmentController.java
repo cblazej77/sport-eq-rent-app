@@ -34,6 +34,8 @@ public class EquipmentController {
 
     @PutMapping("/equipment_edit")
     public String equipmentEdit(@ModelAttribute EquipmentEditDTO equipmentEditDTO) throws IOException {
+        System.out.println(equipmentEditDTO.getEquipmentID());
+        System.out.println(equipmentEditDTO.getCategoryID());
         equipmentService.equipmentEdit(equipmentEditDTO);
         return "redirect:/categories/" + equipmentEditDTO.getCategoryID();
     }

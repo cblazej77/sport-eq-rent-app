@@ -1,38 +1,44 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-  <meta charset="UTF-8">
-  <title>Wyposażenie - [[${categoryName}]]</title>
-  <link rel="stylesheet" href="/css/styles.css">
+    <meta charset="UTF-8">
+    <title>[[${categoryName}]]</title>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
 <div class="top-lane">
-  <div class="top-lane-section">
-    <h1 class="txt-white">Wyposażenie</h1>
-    <div class="nav-container">
-      <a th:href="@{/categories}" class="btn btn-primary">Kategorie</a>
-      <button>Moje rezerwacje</button>
+    <div class="top-lane-section">
+        <h1 class="txt-white">[[${categoryName}]]</h1>
+        <div class="nav-container">
+            <a th:href="@{/categories}" class="btn btn-primary" th:text="#{eq_redirect_cat}"></a>
+            <button th:text="#{eq_redirect_res}"></button>
+        </div>
     </div>
-  </div>
-  <div class="top-lane-account">
-    <a th:href="@{/sign_in}" class="btn btn-primary">Zaloguj się</a>
-  </div>
+    <div class="top-lane-account">
+        <a th:if="${user == null}" th:href="@{/sign_in}" class="btn btn-primary" th:text="#{eq_btn_sign_in}"></a>
+        <div th:if="${user != null}">
+            <a th:ref="@{/logout}" th:text="#{eq_btn_logout}"></a>
+        </div>
+    </div>
 </div>
 <div class="center-body">
-    <div class="filter-body">Filtry</div>
+    <div class="filter-body" th:text="#{eq_filters}"></div>
     <div class="equipment-body">
-        <div th:if="${user != null and user.authorities[0].authority == 'ROLE_ADMIN'}" class="equipment-container" onclick="showModal(null)">
-            <a>
-                Dodaj wyposażenie
+        <div th:if="${user != null and user.role == 'ADMIN'}" class="equipment-container"
+             onclick="showModal(null)">
+            <a th:text="#{eq_btn_add}">
             </a>
         </div>
 
         <div th:each="equipment : ${equipmentList}" class="equipment-container">
             <div>
+                <img th:src="@{/equipment/image/{id}(id=${equipment.equipmentID})}"
+                     style="width: 100px; height: 100px;">
                 <h3 th:text="${equipment.name}"></h3>
                 <p th:text="${equipment.price}"></p>
             </div>
-            <a th:if="${user != null and user.authorities[0].authority == 'ROLE_ADMIN'}"
+            <a th:if="${user != null and user.role == 'ADMIN'}"
+               th:text="#{eq_btn_edit}"
                th:data-id="${equipment.equipmentID}"
                th:data-name="${equipment.name}"
                th:data-description="${equipment.description}"
@@ -40,113 +46,47 @@
                th:data-quantity="${equipment.quantity}"
                th:data-image="@{/equipment/image/{id}(id=${equipment.equipmentID})}"
                onclick="showModal(this)">
-                Edytuj
             </a>
-            <form method="post" th:action="@{/equipment_delete/{id}(id=${equipment.equipmentID})}" th:if="${user != null and user.authorities[0].authority == 'ROLE_ADMIN'}">
+            <form method="post" th:action="@{/equipment_delete/{id}(id=${equipment.equipmentID})}"
+                  th:if="${user != null and user.role == 'ADMIN'}">
                 <input type="hidden" name="_method" value="DELETE">
                 <div>
-                    <button type="submit">Usuń</button>
+                    <button type="submit" th:text="#{eq_btn_delete}"></button>
                 </div>
             </form>
+            <a th:if="${user != null and user.role == 'USER'}" th:text="#{eq_btn_reserve}">
+            </a>
         </div>
     </div>
 </div>
 
 <div id="modal" class="modal-overlay" onclick="hideModal()">
+    <span id="textAdd" th:text="#{eq_btn_add}" style="display: none;"></span>
+    <span id="textEdit" th:text="#{eq_btn_edit}" style="display: none;"></span>
     <form id="equipmentForm" enctype="multipart/form-data" method="POST">
         <input type="hidden" id="hiddenMethod" name="_method" value="POST">
         <div class="modal-window" onclick="event.stopPropagation();">
-            <h2 id="modal-title">Edytuj wyposażenie</h2>
+            <h2 id="modal-title" th:text="#{eq_btn_edit}"></h2>
 
             <div class="modal-image" onclick="triggerFileInput()">
-                <p>Kliknij, aby zmienić obrazek</p>
-                <img id="preview" style="display: none; max-width: 100%; max-height: 150px;" />
+                <p th:text="#{eq_modal_img}"></p>
+                <img id="preview" style="display: none; max-width: 100%; max-height: 150px;"/>
             </div>
 
-            <input type="file" id="fileInput" name="image" accept="image/*" style="display: none;" onchange="previewImage(event)">
-            <input type="text" id="equipmentName" name="name" placeholder="Nazwa wyposażenia">
-            <input type="text" id="equipmentDescription" name="description" placeholder="Opis wyposażenia">
-            <input type="number" id="equipmentPrice" name="price" placeholder="Cena za wypożyczenie na dzień">
-            <input type="number" id="equipmentQuantity" name="quantity" placeholder="Ilość dostępnych sztuk">
+            <input type="file" id="fileInput" name="image" accept="image/*" style="display: none;"
+                   onchange="previewImage(event)">
+            <input type="text" id="equipmentName" name="name" th:placeholder="#{eq_modal_name}">
+            <input type="text" id="equipmentDescription" name="description" th:placeholder="#{eq_modal_desc}">
+            <input type="number" id="equipmentPrice" name="price" th:placeholder="#{eq_modal_price}">
+            <input type="number" id="equipmentQuantity" name="quantity" th:placeholder="#{eq_modal_quantity}">
             <input type="hidden" id="categoryID" name="categoryID" th:value="${categoryID}">
             <input type="hidden" id="equipmentID" name="equipmentID">
 
-            <button id="addButton" type="submit">Zapisz</button>
-            <button type="button" onclick="hideModal()">Anuluj</button>
+            <button id="addButton" type="submit" th:text="#{eq_modal_save}"></button>
+            <button type="button" onclick="hideModal()" th:text="#{eq_modal_cancel}"></button>
         </div>
     </form>
 </div>
-
-<script>
-  function showModal(element) {
-      const modalTitle = document.getElementById('modal-title');
-      const equipmentForm = document.getElementById('equipmentForm');
-      const hiddenMethod = document.getElementById('hiddenMethod');
-      const addButton = document.getElementById('addButton');
-      const preview = document.getElementById('preview');
-      const equipmentIDField = document.getElementById('equipmentID');
-      const equipmentNameField = document.getElementById('equipmentName');
-      const equipmentDescriptionField = document.getElementById('equipmentDescription');
-      const equipmentPriceField = document.getElementById('equipmentPrice');
-      const equipmentQuantityField = document.getElementById('equipmentQuantity');
-      const categoryIDField = document.getElementById('categoryID');
-
-      if (element != null) {
-        console.log(element);
-        const equipmentID = element.getAttribute("data-id");
-        const name = element.getAttribute("data-name");
-        const description = element.getAttribute("data-description");
-        const price = element.getAttribute("data-price");
-        const quantity = element.getAttribute("data-quantity");
-        const image = element.getAttribute("data-image");
-
-        equipmentIDField.value = equipmentID;
-        equipmentNameField.value = name;
-        equipmentDescriptionField.value = description;
-        equipmentPriceField.value = price;
-        equipmentQuantityField.value = quantity;
-        categoryIDField.value = equipmentID;
-        preview.src = image;
-        preview.style.display = 'block';
-
-        modalTitle.innerText = "Edytuj sprzęt";
-        addButton.innerText = "Zapisz zmiany"
-        equipmentForm.action = "/equipment_edit";
-        hiddenMethod.value = "PUT";
-
-      } else {
-        console.log("null")
-        equipmentForm.action = "/equipment_add";
-        equipmentForm.method = "POST";
-        hiddenMethod.value = "POST";
-      }
-
-      document.getElementById('modal').classList.add('active');
-  }
-
-  function hideModal() {
-        const modal = document.getElementById('modal');
-        modal.classList.remove('active');
-  }
-
-  function triggerFileInput() {
-      document.getElementById('fileInput').click();
-  }
-
-  function previewImage(event) {
-        const file = event.target.files[0];
-        const preview = document.getElementById('preview');
-
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
-        }
-  }
-</script>
-
+<script th:src="@{/js/equipment.js}"></script>
 </body>
 </html>

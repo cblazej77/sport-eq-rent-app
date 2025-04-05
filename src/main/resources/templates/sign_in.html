@@ -2,23 +2,23 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title th:text="#{sign_in_title}">Logowanie</title>
+    <title th:text="#{sign_in_title}"></title>
 </head>
 <body>
-    <h2 th:text="#{sign_in_title}">Logowanie</h2>
+    <h2 th:text="#{sign_in_title}"></h2>
     <form th:action="@{sign_in_action}" method="post">
 <div>
-    <label th:text="#{username}">Email</label>
+    <label th:text="#{sign_in_input_username}"></label>
     <input type="text" name="email">
 </div>
 <div>
-    <label th:text="#{password}">Hasło</label>
+    <label th:text="#{sign_in_input_password}"></label>
     <input type="password" name="password">
 </div>
-        <button type="submit" th:text="#{log_in}"></button>
+        <button type="submit" th:text="#{sign_in_btn_submit}"></button>
     </form>
     <div>
-        <a th:href="@{/sign_up}" class="btn btn-primary" th:text="#{register_redirect_btn}">Nie masz konta? Zarejestruj się</a>
+        <a th:href="@{/sign_up}" class="btn btn-primary" th:text="#{sign_in_redirect}"></a>
     </div>
 <div>
 

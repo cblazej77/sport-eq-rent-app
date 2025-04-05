@@ -2,30 +2,29 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Rejestracja</title>
+    <title th:text="#{sign_up_title}"></title>
 </head>
 <body>
-<h2>Rejestracja</h2>
+<h2 th:text="#{sign_up_title}"></h2>
 <form th:action="@{/sign_up_action}" method="post">
     <div>
-        <label th:text="#{name}"></label>
+        <label th:text="#{sign_up_input_name}"></label>
         <input type="text" name="name">
     </div>
     <div>
-        <label th:text="#{surname}"></label>
+        <label th:text="#{sign_up_input_surname}"></label>
         <input type="text" name="surname">
     </div>
     <div>
-        <label th:text="#{email}"></label>
+        <label th:text="#{sign_up_input_email}"></label>
         <input type="text" name="email">
     </div>
     <div>
-        <label th:text="#{password}"></label>
+        <label th:text="#{sign_up_input_password}"></label>
         <input type="password" name="password">
     </div>
-    <button type="submit" th:text="#{sign_up}"></button>
+    <button type="submit" th:text="#{sign_up_btn_submit}"></button>
 </form>
-<a th:href="@{/sign_in}" class="btn btn-primary" th:text="#{sign_in_redirect}">Masz już konto? Zaloguj się</a>
-
+<a th:href="@{/sign_in}" class="btn btn-primary" th:text="#{sign_up_redirect}"></a>
 </body>
 </html>

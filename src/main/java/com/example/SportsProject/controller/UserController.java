@@ -2,6 +2,7 @@ package com.example.SportsProject.controller;
 
 import com.example.SportsProject.dto.UserLoginDTO;
 import com.example.SportsProject.entity.User;
+import com.example.SportsProject.repository.UserRepository;
 import com.example.SportsProject.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -10,14 +11,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class UserController {
     private final UserService userService;
+    private final UserRepository userRepository;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserRepository userRepository) {
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/sign_in")
@@ -48,5 +52,10 @@ public class UserController {
         } else {
             return "redirect:/sign_in";
         }
+    }
+
+    @GetMapping("/get_name/{username}")
+    public String getName(@PathVariable String username) {
+        return userRepository.findUserByEmail(username).getName();
     }
 }
