@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.SQLOutput;
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/categories")
@@ -73,11 +74,25 @@ public class CategoryController {
     }
 
     @GetMapping("/{categoryID}")
-    public String getEquipmentByCategory(@PathVariable Long categoryID, Model model) {
+    public String getEquipmentByCategory(
+            @PathVariable Long categoryID,
+            @RequestParam(required = false) String sortType,
+            @RequestParam(required = false) String filterName,
+            @RequestParam(required = false) Float filterPriceMin,
+            @RequestParam(required = false) Float filterPriceMax,
+            @RequestParam(required = false) Boolean filterAvailable,
+            Model model) {
+        if (sortType == null) {sortType = "default";}
+        System.out.println("searchName: " + filterName);
         Category category = categoryService.getCategoryById(categoryID);
+        System.out.println(filterAvailable);
+        List<Equipment> equipment = equipmentService.getEquipmentByCategoryWithFilters(categoryID, sortType, filterName, filterPriceMin, filterPriceMax, filterAvailable);
 
-        List<Equipment> equipment = equipmentService.getEquipmentByCategory(categoryID);
-
+        model.addAttribute("sortType", sortType);
+        model.addAttribute("filterName", Objects.requireNonNullElse(filterName, ""));
+        model.addAttribute("filterPriceMin", Objects.requireNonNullElse(filterPriceMin, ""));
+        model.addAttribute("filterPriceMax", Objects.requireNonNullElse(filterPriceMax, ""));
+        model.addAttribute("filterAvailable", filterAvailable);
         model.addAttribute("categoryID", categoryID);
         model.addAttribute("categoryName", category.getName());
         model.addAttribute("equipmentList", equipment);

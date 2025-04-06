@@ -22,7 +22,29 @@
     </div>
 </div>
 <div class="center-body">
-    <div class="filter-body" th:text="#{eq_filters}"></div>
+    <form method="get" th:action="@{/categories/{id}(id=${categoryID})}">
+    <div class="filter-body">
+        <select name="sortType">
+            <option th:value="default" th:text="#{sort_title}" th:selected="${sortType == default}"></option>
+            <option th:value="priceLH" th:text="#{sort_price_LH}" th:selected="${sortType == sort_price_LH}"></option>
+            <option th:value="priceHL" th:text="#{sort_price_HL}" th:selected="${sortType == sort_price_HL}"></option>
+            <option th:value="quantityLH" th:text="#{sort_quantity_LH}" th:selected="${sortType == sort_quantity_LH}"></option>
+            <option th:value="quantityHL" th:text="#{sort_quantity_HL}" th:selected="${sortType == sort_quantity_HL}"></option>
+        </select>
+        <div style="flex-direction: column; display: flex;">
+            <h1 th:text="#{filters_title}"></h1>
+            <label th:text="#{filters_name}"></label>
+            <input id="filterName" name="filterName" type="text" th:value="${filterName}">
+            <label th:text="#{filters_price}"></label>
+            <input id="filterMinPrice" name="filterPriceMin" type="number" th:placeholder="#{filters_price_from}" th:value="${filterPriceMin}">
+            <input id="filterMaxPrice" name="filterPriceMax" type="number" th:placeholder="#{filters_price_to}" th:value="${filterPriceMax}">
+            <label th:text="#{filters_available_title}"></label>
+            <input type="checkbox" name="filterAvailable" th:checked="${filterAvailable}">
+            <label th:text="#{filters_available}"></label>
+            <button id="filterBtn" type="submit" th:text="#{filters_btn}"></button>
+        </div>
+    </div>
+    </form>
     <div class="equipment-body">
         <div th:if="${user != null and user.role == 'ADMIN'}" class="equipment-container"
              onclick="showModal(null)">
