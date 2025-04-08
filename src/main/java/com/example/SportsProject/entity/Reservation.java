@@ -15,19 +15,20 @@ public class Reservation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "reservationID")
+    @Column(name = "reservation-id")
     private Long reservationID;
 
     @Column(name = "status", nullable = false)
-    private ReservationStatus reservationStatus;
+    private String status;
 
-    // Data utworzenia rezerwacji
-    @Column(name = "reservationDate", nullable = false)
+    @Column(name = "reservation-date", nullable = false)
     private String reservationDate;
 
-    // Data, kiedy klient odbiera sprzęt
-    @Column(name = "pickup_date", nullable = false)
-    private String pickup_date;
+    @Column(name = "pickup-date", nullable = false)
+    private String pickupDate;
+
+    @Column(name = "return-date", nullable = false)
+    private String returnDate;
 
     @ManyToOne
     @JoinColumn(name = "userID", nullable = false)

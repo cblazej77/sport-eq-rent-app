@@ -56,8 +56,10 @@
             <div>
                 <img th:src="@{/equipment/image/{id}(id=${equipment.equipmentID})}"
                      style="width: 100px; height: 100px;">
-                <h3 th:text="${equipment.name}"></h3>
-                <p th:text="${equipment.price}"></p>
+                <h3 th:text="#{filters_name} + ': ' + ${equipment.name}"></h3>
+                <p th:text="#{filters_price} + ': ' + ${equipment.price}"></p>
+                <label th:text="#{eq_modal_desc} + ': ' + ${equipment.description}"></label>
+                <label th:text="#{eq_modal_quantity} + ': ' + ${equipment.quantity}"></label>
             </div>
             <a th:if="${user != null and user.role == 'ADMIN'}"
                th:text="#{eq_btn_edit}"
@@ -76,7 +78,11 @@
                     <button type="submit" th:text="#{eq_btn_delete}"></button>
                 </div>
             </form>
-            <a th:if="${user != null and user.role == 'USER'}" th:text="#{eq_btn_reserve}">
+            <a th:if="${user != null and user.role == 'USER'}"
+               th:text="#{eq_btn_reserve}"
+               th:data-equipment-id="${equipment.equipmentID}"
+               th:data-user-email="${user.email}"
+               onclick="showReservationModal(this)">
             </a>
         </div>
     </div>
@@ -109,6 +115,15 @@
         </div>
     </form>
 </div>
+
+<div id="reservationModal" class="modal-overlay" onClick="hideReservationModal()">
+<!--    <form id="reservationForm" enctype="multipart/form-data" method="POST">-->
+        <div class="modal-window" onclick="event.stopPropagation();">
+            <h2 th:text="#{reservation_modal_title}"></h2>
+        </div>
+<!--    </form>-->
+</div>
+
 <script th:src="@{/js/equipment.js}"></script>
 </body>
 </html>

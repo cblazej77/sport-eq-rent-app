@@ -39,11 +39,22 @@ function showModal(element) {
         });
 
     modalTitle.innerText = textEdit;
+
     equipmentForm.action = "/equipment_edit";
     hiddenMethod.value = "PUT";
 
   } else {
     const textAdd = document.getElementById('textAdd').innerText;
+    const file = document.getElementById('fileInput');
+
+    equipmentIDField.value = "";
+    equipmentNameField.value = "";
+    equipmentDescriptionField.value = "";
+    equipmentPriceField.value = "";
+    equipmentQuantityField.value = "";
+    preview.src = "";
+    preview.style.display = "none";
+    file.value = "";
 
     modalTitle.innerText = textAdd;
     equipmentForm.action = "/equipment_add";
@@ -54,9 +65,20 @@ function showModal(element) {
   document.getElementById('modal').classList.add('active');
 }
 
+function showReservationModal(element) {
+    console.log(element);
+
+    document.getElementById('reservationModal').classList.add('active');
+}
+
 function hideModal() {
-  const modal = document.getElementById('modal');
-  modal.classList.remove('active');
+    const modal = document.getElementById('modal');
+    modal.classList.remove('active');
+}
+
+function hideReservationModal() {
+    const modal = document.getElementById('reservationModal');
+    modal.classList.remove('active');
 }
 
 function triggerFileInput() {
