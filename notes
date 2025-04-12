@@ -7,3 +7,4 @@
 - all layouts
 - email confirmation
 - bean validation with own annotations
+- reservations (RESERVED, IN_USE, RETURNED)

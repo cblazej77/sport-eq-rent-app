@@ -17,13 +17,13 @@ public class ReservationController {
 
     @PostMapping("/new")
     @ResponseBody
-    public ResponseEntity<String> addReservation(@RequestParam String pickupDate,
-                                                 @RequestParam String returnDate,
-                                                 @RequestParam String email,
-                                                 @RequestParam Long equipmentID) {
+    public String addReservation(@RequestParam String pickupDate,
+                                 @RequestParam String returnDate,
+                                 @RequestParam String email,
+                                 @RequestParam Long equipmentID) {
 
         reservationService.addReservation(pickupDate, returnDate, email, equipmentID);
 
-        return ResponseEntity.ok("OK");
+        return "/categories";
     }
 }

@@ -68,7 +68,36 @@ function showModal(element) {
 function showReservationModal(element) {
     console.log(element);
 
+    const email = element.getAttribute("data-email");
+    const equipmentID = element.getAttribute("data-id");
+
+    const reservationForm = document.getElementById('reservationForm');
+    const hiddenReservationMethod = document.getElementById('hiddenReservationMethod');
+    const emailInput = document.getElementById('emailInput');
+    const idInput = document.getElementById('idInput');
+
+    reservationForm.action = "/reservation/new";
+    reservationForm.method = "POST";
+    hiddenReservationMethod.value = "POST";
+
+    emailInput.value = email;
+    idInput.value = equipmentID;
+
     document.getElementById('reservationModal').classList.add('active');
+}
+
+function showReturnDate(pickupDate) {
+    console.log(pickupDate);
+    const label = document.getElementById('returnDateLabel');
+    const input = document.getElementById('returnDateInput');
+    const lab = document.getElementById('lab');
+
+    input.value = "";
+
+    lab.text = pickupDate;
+    input.min = pickupDate;
+    label.style.display = "block";
+    input.style.display = "block";
 }
 
 function hideModal() {

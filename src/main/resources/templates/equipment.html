@@ -80,8 +80,8 @@
             </form>
             <a th:if="${user != null and user.role == 'USER'}"
                th:text="#{eq_btn_reserve}"
-               th:data-equipment-id="${equipment.equipmentID}"
-               th:data-user-email="${user.email}"
+               th:data-id="${equipment.equipmentID}"
+               th:data-email="${user.email}"
                onclick="showReservationModal(this)">
             </a>
         </div>
@@ -117,11 +117,21 @@
 </div>
 
 <div id="reservationModal" class="modal-overlay" onClick="hideReservationModal()">
-<!--    <form id="reservationForm" enctype="multipart/form-data" method="POST">-->
+    <form id="reservationForm" enctype="multipart/form-data" method="POST">
+        <input type="hidden" id="hiddenReservationMethod" name="_method" value="POST">
         <div class="modal-window" onclick="event.stopPropagation();">
+            <input id="emailInput" style="display: none;" name="email">
+            <input id="idInput" style="display: none;" name="equipmentID">
+
             <h2 th:text="#{reservation_modal_title}"></h2>
+            <label th:text="#{reservation_modal_date_pickup}"></label>
+            <input type="date" name="pickupDate" th:min="${minPickupDate}" th:max="${maxPickupDate}" onchange="showReturnDate(this.value)">
+            <label id="lab"></label>
+            <label id="returnDateLabel" th:text="#{reservation_modal_date_return}" style="display: none;"></label>
+            <input id="returnDateInput" type="date" name="returnDate" th:max="${maxReturnDate}" style="display: none;">
+            <button type="submit" th:text="#{reservation_modal_title}"></button>
         </div>
-<!--    </form>-->
+    </form>
 </div>
 
 <script th:src="@{/js/equipment.js}"></script>

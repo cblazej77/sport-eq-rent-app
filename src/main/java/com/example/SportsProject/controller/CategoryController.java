@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.SQLOutput;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -96,6 +98,9 @@ public class CategoryController {
         model.addAttribute("categoryID", categoryID);
         model.addAttribute("categoryName", category.getName());
         model.addAttribute("equipmentList", equipment);
+        model.addAttribute("minPickupDate", LocalDate.now().toString());
+        model.addAttribute("maxPickupDate", LocalDate.now().plusWeeks(2).toString());
+        model.addAttribute("maxReturnDate", LocalDate.now().plusMonths(2).toString());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof UserDetails) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
