@@ -76,7 +76,7 @@ function showReservationModal(element) {
     const emailInput = document.getElementById('emailInput');
     const idInput = document.getElementById('idInput');
 
-    reservationForm.action = "/reservation/new";
+    reservationForm.action = "/reservations/new";
     reservationForm.method = "POST";
     hiddenReservationMethod.value = "POST";
 

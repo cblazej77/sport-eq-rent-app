@@ -11,7 +11,7 @@
         <h1 class="txt-white">[[${categoryName}]]</h1>
         <div class="nav-container">
             <a th:href="@{/categories}" class="btn btn-primary" th:text="#{eq_redirect_cat}"></a>
-            <button th:text="#{eq_redirect_res}"></button>
+            <a th:text="#{eq_redirect_res}" th:href="@{/reservations}"></a>
         </div>
     </div>
     <div class="top-lane-account">
@@ -124,6 +124,8 @@
             <input id="idInput" style="display: none;" name="equipmentID">
 
             <h2 th:text="#{reservation_modal_title}"></h2>
+            <label th:text="#{res_modal_quantity}"></label>
+            <input type="number" name="quantity">
             <label th:text="#{reservation_modal_date_pickup}"></label>
             <input type="date" name="pickupDate" th:min="${minPickupDate}" th:max="${maxPickupDate}" onchange="showReturnDate(this.value)">
             <label id="lab"></label>

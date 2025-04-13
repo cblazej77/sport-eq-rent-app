@@ -18,6 +18,12 @@ public class Reservation {
     @Column(name = "reservation-id")
     private Long reservationID;
 
+    @Column(name = "reservation-code", nullable = false)
+    private String reservationCode;
+
+    @Column(name = "quantity", nullable = false)
+    private int quantity;
+
     @Column(name = "status", nullable = false)
     private String status;
 
@@ -31,11 +37,11 @@ public class Reservation {
     private String returnDate;
 
     @ManyToOne
-    @JoinColumn(name = "userID", nullable = false)
+    @JoinColumn(name = "user-id", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "equipmentID", nullable = false)
+    @JoinColumn(name = "equipment-id", nullable = false)
     private Equipment equipment;
 
 }

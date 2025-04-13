@@ -8,7 +8,11 @@ import com.example.SportsProject.repository.ReservationRepository;
 import com.example.SportsProject.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ReservationService {
@@ -23,7 +27,14 @@ public class ReservationService {
         this.equipmentRepository = equipmentRepository;
     }
 
-    public Reservation addReservation(String pickupDate,
+    public List<Reservation> getReservationList(User user) {
+        List<Reservation> reservationList = reservationRepository.findAllByUser(user);
+
+        return reservationList;
+    }
+
+    public Reservation addReservation(int quantity,
+                                      String pickupDate,
                                       String returnDate,
                                       String email,
                                       Long equipmentID) {
@@ -31,8 +42,13 @@ public class ReservationService {
         Reservation reservation = new Reservation();
         Equipment equipment = equipmentRepository.getEquipmentByEquipmentID(equipmentID);
 
+        String resCodeDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String resCodeID = String.format("%04d", reservationRepository.count() % 10000);
+
         reservation.setStatus("RESERVED");
+        reservation.setReservationCode("RES-" + resCodeDate + "-" + resCodeID);
         reservation.setReservationDate(LocalDateTime.now().toString());
+        reservation.setQuantity(quantity);
         reservation.setPickupDate(pickupDate);
         reservation.setReturnDate(returnDate);
         reservation.setUser(userRepository.findUserByEmail(email));

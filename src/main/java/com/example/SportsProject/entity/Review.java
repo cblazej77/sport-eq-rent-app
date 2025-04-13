@@ -14,7 +14,7 @@ public class Review {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "reviewID")
+    @Column(name = "review-id")
     private Long reviewID;
 
     @Column(name = "text")
@@ -24,11 +24,11 @@ public class Review {
     private int rate;
 
     @ManyToOne
-    @JoinColumn(name = "userID", nullable = false)
+    @JoinColumn(name = "user-id", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "equipmentTypeID", nullable = false)
+    @JoinColumn(name = "equipment-id", nullable = false)
     private Equipment equipment;
 
 }

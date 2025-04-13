@@ -8,3 +8,14 @@
 - email confirmation
 - bean validation with own annotations
 - reservations (RESERVED, IN_USE, RETURNED)
+
+Reservation steps:
+1. User finds and reserves an item
+– Selects pickup and return dates
+– Reservation is created with status: RESERVED
+2. User goes to the store on the pickup date
+– Brings confirmation
+3. Admin verifies the user and updates the reservation status to IN_USE
+– Equipment is handed over to the user
+4. User returns the item to the store on the return date
+– Admin inspects the item and updates the reservation status to RETURNED

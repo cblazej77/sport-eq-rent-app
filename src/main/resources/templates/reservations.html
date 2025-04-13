@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{res_title}"></title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div class="top-lane">
+    <div class="top-lane-section">
+        <h1 class="txt-white" th:text="#{res_title}"></h1>
+        <div class="nav-container">
+            <a th:href="@{/categories}" class="btn btn-primary" th:text="#{eq_redirect_cat}"></a>
+            <button th:text="#{eq_redirect_res}"></button>
+        </div>
+    </div>
+    <div class="top-lane-account">
+        <a th:if="${user == null}" th:href="@{/sign_in}" class="btn btn-primary" th:text="#{eq_btn_sign_in}"></a>
+        <div th:if="${user != null}">
+            <a th:ref="@{/logout}" th:text="#{eq_btn_logout}"></a>
+        </div>
+    </div>
+</div>
+<div class="center-body">
+    <div class="equipment-body">
+        <div class="equipment-container" th:each="reservation : ${reservationList}">
+            <div style="display: flex; flex-direction: column;">
+                <label th:text="'ID: ' + ${reservation.reservationID}"></label>
+                <label th:text="#{res_status} + ${reservation.status}"></label>
+                <label th:text="#{res_reservationDate} + ${reservation.reservationDate}"></label>
+                <label th:text="#{res_pickupDate} + ${reservation.pickupDate}"></label>
+                <label th:text="#{res_returnDate} + ${reservation.returnDate}"></label>
+                <label>Quantity:</label>
+                <label>Cost:</label>
+                <label>Days to pickup/return:</label>
+                <label>Name/surname of the customer (ADMIN):</label>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

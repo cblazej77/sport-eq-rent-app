@@ -16,7 +16,7 @@ public class Equipment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "equipmentID")
+    @Column(name = "equipment-id")
     private Long equipmentID;
 
     @Column(name = "name", nullable = false)
@@ -35,7 +35,7 @@ public class Equipment {
     private int quantity;
 
     @ManyToOne
-    @JoinColumn(name = "categoryID", nullable = false)
+    @JoinColumn(name = "category-id", nullable = false)
     private Category category;
 
     @OneToMany(mappedBy = "equipment")
