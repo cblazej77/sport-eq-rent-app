@@ -49,6 +49,16 @@ public class ReservationController {
 
         reservationService.addReservation(quantity, pickupDate, returnDate, email, equipmentID);
 
-        return "/categories";
+        return "reservations";
     }
+
+    @PutMapping("/change-status")
+    public String changeStatus(@RequestParam Long reservationID,
+                               @RequestParam String status) {
+
+        reservationService.changeStatus(reservationID, status);
+
+        return "redirect:/reservations";
+    }
+
 }

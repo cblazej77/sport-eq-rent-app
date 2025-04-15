@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ReservationService {
@@ -28,7 +29,13 @@ public class ReservationService {
     }
 
     public List<Reservation> getReservationList(User user) {
-        List<Reservation> reservationList = reservationRepository.findAllByUser(user);
+        List<Reservation> reservationList;
+
+        if (Objects.equals(user.getRole(), "ADMIN")) {
+            reservationList = reservationRepository.findAll();
+        } else {
+            reservationList = reservationRepository.findAllByUser(user);
+        }
 
         return reservationList;
     }
@@ -57,6 +64,13 @@ public class ReservationService {
         equipment.setQuantity(equipment.getQuantity() - 1);
 
         equipmentRepository.save(equipment);
+        return reservationRepository.save(reservation);
+    }
+
+    public Reservation changeStatus(Long reservationID, String status) {
+        Reservation reservation = reservationRepository.getReferenceById(reservationID);
+
+        reservation.setStatus(status);
         return reservationRepository.save(reservation);
     }
 }

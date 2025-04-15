@@ -35,6 +35,16 @@
                 <label>Days to pickup/return:</label>
                 <label>Name/surname of the customer (ADMIN):</label>
             </div>
+            <div th:if="${user.role == 'ADMIN'}">
+                <form id="statusForm" enctype="multipart/form-data" method="POST" action="/reservations/change-status">
+                    <input type="hidden" id="hiddenMethod" name="_method" value="PUT">
+                    <input type="hidden" name="reservationID" th:value="${reservation.reservationID}">
+
+                    <button th:if="${reservation.status == 'RESERVED'}" th:text="#{res_btn_pickup}" name="status" value="IN_USE" type="submit"></button>
+                    <button th:if="${reservation.status == 'IN_USE'}" th:text="#{res_btn_return}" name="status" value="RETURNED" type="submit"></button>
+                    <button th:if="${reservation.status != 'CANCELLED' and reservation.status != 'RETURNED'}" th:text="#{res_btn_cancel}" name="status" value="CANCELLED" type="submit"></button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
