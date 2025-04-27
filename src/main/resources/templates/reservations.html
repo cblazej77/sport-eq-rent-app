@@ -23,28 +23,35 @@
 </div>
 <div class="center-body">
     <div class="equipment-body">
+        <label th:text="'Search by reservation code'"></label>
+        <input id="searchInput" name="searchInput" type="text">
         <div class="equipment-container" th:each="reservation : ${reservationList}">
             <div style="display: flex; flex-direction: column;">
-                <label th:text="'ID: ' + ${reservation.reservationID}"></label>
-                <label th:text="#{res_status} + ${reservation.status}"></label>
-                <label th:text="#{res_reservationDate} + ${reservation.reservationDate}"></label>
-                <label th:text="#{res_pickupDate} + ${reservation.pickupDate}"></label>
-                <label th:text="#{res_returnDate} + ${reservation.returnDate}"></label>
-                <label>Quantity:</label>
-                <label>Cost:</label>
-                <label>Days to pickup/return:</label>
-                <label>Name/surname of the customer (ADMIN):</label>
+                <label th:text="#{res.code(${reservation.reservationCode})}"></label>
+                <label th:text="#{res.status(${reservation.status})}"></label>
+                <label th:text="#{res.reservationDate(${reservation.reservationDate})}"></label>
+                <label th:text="#{res.pickupDate(${reservation.pickupDate})}"></label>
+                <label th:text="#{res.returnDate(${reservation.returnDate})}"></label>
+                <label th:text="#{res.quantity(${reservation.quantity})}"></label>
+                <label th:text="#{res.cost(${reservation.cost})}"></label>
+                <label th:if="${user.role == 'ADMIN'}" th:text="#{res.userFullName(${reservation.user.name}, ${reservation.user.surname})}"></label>
+                <label th:if="${user.role == 'ADMIN'}" th:text="#{res.userEmail(${reservation.user.email})}"></label>
             </div>
-            <div th:if="${user.role == 'ADMIN'}">
-                <form id="statusForm" enctype="multipart/form-data" method="POST" action="/reservations/change-status">
-                    <input type="hidden" id="hiddenMethod" name="_method" value="PUT">
-                    <input type="hidden" name="reservationID" th:value="${reservation.reservationID}">
 
-                    <button th:if="${reservation.status == 'RESERVED'}" th:text="#{res_btn_pickup}" name="status" value="IN_USE" type="submit"></button>
-                    <button th:if="${reservation.status == 'IN_USE'}" th:text="#{res_btn_return}" name="status" value="RETURNED" type="submit"></button>
-                    <button th:if="${reservation.status != 'CANCELLED' and reservation.status != 'RETURNED'}" th:text="#{res_btn_cancel}" name="status" value="CANCELLED" type="submit"></button>
-                </form>
-            </div>
+            <form id="statusForm" enctype="multipart/form-data" method="POST" action="/reservations/change-status">
+                <input type="hidden" id="hiddenMethod" name="_method" value="PUT">
+                <input type="hidden" name="reservationID" th:value="${reservation.reservationID}">
+                <div th:if="${user.role == 'ADMIN'}">
+                    <button th:if="${reservation.status == 'RESERVED'}" th:text="#{res_btn_pickup}" name="status"
+                            value="IN_USE" type="submit"></button>
+                    <button th:if="${reservation.status == 'IN_USE'}" th:text="#{res_btn_return}" name="status"
+                            value="RETURNED" type="submit"></button>
+                    <button th:if="${reservation.status != 'CANCELLED' and reservation.status != 'RETURNED'}"
+                            th:text="#{res_btn_cancel}" name="status" value="CANCELLED" type="submit"></button>
+                </div>
+                <button th:if="${reservation.status == 'RESERVED' and user.role == 'USER'}"
+                        th:text="#{res_btn_cancel}" name="status" value="CANCELLED" type="submit"></button>
+            </form>
         </div>
     </div>
 </div>

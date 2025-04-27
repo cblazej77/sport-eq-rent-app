@@ -6,10 +6,14 @@ import com.example.SportsProject.entity.User;
 import com.example.SportsProject.repository.EquipmentRepository;
 import com.example.SportsProject.repository.ReservationRepository;
 import com.example.SportsProject.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +22,8 @@ import java.util.Objects;
 @Service
 public class ReservationService {
 
+    @Autowired
+    private JavaMailSender mailSender;
     private final ReservationRepository reservationRepository;
     private final UserRepository userRepository;
     private final EquipmentRepository equipmentRepository;
@@ -52,16 +58,36 @@ public class ReservationService {
         String resCodeDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         String resCodeID = String.format("%04d", reservationRepository.count() % 10000);
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime localDateTime = LocalDateTime.now();
+
+        int daysInUse = Period.between(LocalDate.parse(pickupDate), LocalDate.parse(returnDate)).getDays();
+
         reservation.setStatus("RESERVED");
         reservation.setReservationCode("RES-" + resCodeDate + "-" + resCodeID);
-        reservation.setReservationDate(LocalDateTime.now().toString());
+        reservation.setReservationDate(localDateTime.toString());
         reservation.setQuantity(quantity);
         reservation.setPickupDate(pickupDate);
         reservation.setReturnDate(returnDate);
         reservation.setUser(userRepository.findUserByEmail(email));
         reservation.setEquipment(equipment);
+        reservation.setCost(quantity * equipment.getPrice() * (daysInUse));
 
         equipment.setQuantity(equipment.getQuantity() - 1);
+
+        String subject = "SportEqRent - Your reservation";
+        String message = "Equipment has been reserved on " + localDateTime.format(formatter) +
+                ". Here is your reservation code: " + reservation.getReservationCode() +
+                ". Please show it at the store to verify your reservation. Make sure to pick up your equipment before " +
+                reservation.getPickupDate() + ".\n\n" + "Equipment details:\n" + equipment.getName() + "\n" +
+                equipment.getDescription();
+
+        SimpleMailMessage mail = new SimpleMailMessage();
+        mail.setTo(reservation.getUser().getEmail());
+        mail.setSubject(subject);
+        mail.setText(message);
+
+        mailSender.send(mail);
 
         equipmentRepository.save(equipment);
         return reservationRepository.save(reservation);

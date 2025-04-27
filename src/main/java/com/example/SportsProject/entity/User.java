@@ -34,6 +34,15 @@ public class User {
     @Column(name = "role", nullable = false)
     private String role;
 
+    @Column(name = "verified")
+    private Boolean verified;
+
     @OneToMany(mappedBy = "user")
     private List<Reservation> reservationList;
+
+    @OneToMany(mappedBy = "user")
+    private List<EmailVerification> emailVerificationList;
+
+    @OneToMany(mappedBy = "user")
+    private List<Review> reviewList;
 }

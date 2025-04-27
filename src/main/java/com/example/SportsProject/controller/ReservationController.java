@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -35,6 +36,8 @@ public class ReservationController {
             List<Reservation> reservationList = reservationService.getReservationList(user);
             model.addAttribute("user", user);
             model.addAttribute("reservationList", reservationList);
+            model.addAttribute("today", LocalDate.now());
+            System.out.println(LocalDate.now());
         }
         return "reservations";
     }

@@ -26,11 +26,20 @@ h1 {
 
 h2 {
     text-weight: normal;
-    color: var(--gray);
+    color: var(--black);
+}
+
+label {
+    color: var(--black);
+    margin: 0px;
 }
 
 .txt-white {
     color: var(--white);
+}
+
+.txt-gray {
+    color: var(--gray);
 }
 
 .top-lane {
@@ -69,15 +78,38 @@ h2 {
     padding: 5px 0;
 }
 
+.nav-button {
+    padding: 5px 20px;
+    border: 2px solid var(--white);
+    border-color: var(--white);
+    border-radius: 15px;
+    background-color: var(--primary);
+    text-color: var(--white);
+    text-weight: bold;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.btn-active {
+
+}
+
 .category-container {
     display: flex;
     width: 385px;
-    height: 300px;
+    height: 400px;
     background-color: var(--secondary);
     margin: 10px;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.cat-img {
+    width: 280px;
+    height: 250px;
     border-radius: 10px;
 }
 

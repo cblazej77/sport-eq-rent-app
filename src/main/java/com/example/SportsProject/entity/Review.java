@@ -23,6 +23,9 @@ public class Review {
     @Column(name = "rate", nullable = false)
     private int rate;
 
+    @Column(name = "date")
+    private String date;
+
     @ManyToOne
     @JoinColumn(name = "user-id", nullable = false)
     private User user;

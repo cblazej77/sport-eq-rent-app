@@ -24,6 +24,9 @@ public class Reservation {
     @Column(name = "quantity", nullable = false)
     private int quantity;
 
+    @Column(name = "cost", nullable = false)
+    private float cost;
+
     @Column(name = "status", nullable = false)
     private String status;
 

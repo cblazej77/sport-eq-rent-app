@@ -1,5 +1,6 @@
 package com.example.SportsProject.service;
 
+import com.example.SportsProject.dto.CategoryWithQuantityDTO;
 import com.example.SportsProject.entity.Category;
 import com.example.SportsProject.entity.Equipment;
 import com.example.SportsProject.repository.CategoryRepository;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -19,8 +21,20 @@ public class CategoryService {
         this.equipmentService = equipmentService;
     }
 
-    public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+    public List<CategoryWithQuantityDTO> getAllCategories() {
+        List<Category> categoryList = categoryRepository.findAll();
+        List<CategoryWithQuantityDTO> categoryWithQuantityDTOS = new ArrayList<>();
+
+        for(Category category : categoryList) {
+            CategoryWithQuantityDTO categoryWithQuantityDTO = new CategoryWithQuantityDTO();
+            categoryWithQuantityDTO.setCategoryID(category.getCategoryID());
+            categoryWithQuantityDTO.setImage(category.getImage());
+            categoryWithQuantityDTO.setName(category.getName());
+            categoryWithQuantityDTO.setQuantity(10);
+            categoryWithQuantityDTOS.add(categoryWithQuantityDTO);
+        }
+
+        return categoryWithQuantityDTOS;
     }
 
     public Category categoryAdd(String name, MultipartFile image) {

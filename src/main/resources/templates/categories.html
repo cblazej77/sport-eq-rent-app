@@ -11,8 +11,8 @@
     <div class="top-lane-section">
         <h1 class="txt-white" th:text="#{cat_title}"></h1>
         <div class="nav-container">
-            <button th:text="#{cat_title}"></button>
-            <button th:text="#{cat_redirect_reservations}"></button>
+            <button class="nav-button" th:text="#{cat_title}"></button>
+            <button th:if="${user != null}" class="nav-button" th:text="#{cat_redirect_reservations}" th:onclick="window.location.href='/reservations';"></button>
         </div>
     </div>
     <div class="top-lane-account">
@@ -33,13 +33,11 @@
             <h2 th:text="#{cat_btn_add}"></h2>
         </div>
     </div>
-
-    <div th:each="category : ${categories}" class="category-container">
-        <div th:href="@{/categories/{id}(id=${category.categoryID})}">
-            <label th:text="${category.name}"></label>
+    <div th:each="category : ${categories}" class="category-container" th:onclick="window.location.href=/*[[@{/categories/{id}(id=${category.categoryID})}]]*/">
             <img th:src="@{/categories/image/{id}(id=${category.categoryID})}" alt="Category Image"
-                 style="width: 100px; height: 100px;"/>
-            <a th:href="@{/categories/{id}(id=${category.categoryID})}" th:text="#{cat_btn_open}"></a>
+                 class="cat-img"/>
+            <h2 th:text="${category.name}"></h2>
+            <label class="txt-gray" th:text="#{cat_quantity} + ${category.quantity}"></label>
             <a th:if="${user != null and user.role == 'ADMIN'}"
                th:data-id="${category.categoryID}"
                th:data-name="${category.name}"
@@ -54,7 +52,6 @@
                     <button type="submit" th:text="#{cat_btn_delete}"></button>
                 </div>
             </form>
-        </div>
     </div>
 </div>
 

@@ -15,10 +15,12 @@ import org.springframework.stereotype.Service;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailVerificationService emailVerificationService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, EmailVerificationService emailVerificationService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.emailVerificationService = emailVerificationService;
     }
 
     @Autowired
@@ -26,7 +28,7 @@ public class UserService {
 
     public Boolean signIn(UserLoginDTO userLoginDTO) {
         User userCheck = userRepository.findUserByEmail(userLoginDTO.getEmail());
-        if (userCheck != null && passwordEncoder.matches(userLoginDTO.getPassword(), userCheck.getPassword())) {
+        if (userCheck != null && userCheck.getVerified() && passwordEncoder.matches(userLoginDTO.getPassword(), userCheck.getPassword())) {
             UserDetails userDetails = org.springframework.security.core.userdetails.User
                     .withUsername(userCheck.getEmail())
                     .password(userCheck.getPassword())
@@ -49,8 +51,10 @@ public class UserService {
 
         if (userCheck == null){
             user.setRole("USER");
+            user.setVerified(false);
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             userRepository.save(user);
+            emailVerificationService.sendVerificationToken(user);
             return "User saved";
         }
 
