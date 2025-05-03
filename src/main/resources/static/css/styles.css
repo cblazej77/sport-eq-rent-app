@@ -21,7 +21,7 @@ body {
 h1 {
     margin: 0px;
     text-weight: bold;
-    font-size: 32px;
+    font-size: 36px;
 }
 
 h2 {
@@ -32,6 +32,25 @@ h2 {
 label {
     color: var(--black);
     margin: 0px;
+}
+
+button {
+    padding: 5px 20px;
+    border: 2px solid var(--white);
+    border-radius: 15px;
+    background-color: var(--primary);
+    text-color: var(--white);
+    text-weight: bold;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.btn {
+    padding: 5px 20px;
+    border: 1px solid var(--gray);
+    border-radius: 15px;
+    color: var(--black);
+    cursor: pointer;
 }
 
 .txt-white {
@@ -79,12 +98,12 @@ label {
 }
 
 .nav-button {
-    padding: 5px 20px;
-    border: 2px solid var(--white);
+    padding: 4px 15px;
+    border: 1px solid var(--white);
     border-color: var(--white);
     border-radius: 15px;
     background-color: var(--primary);
-    text-color: var(--white);
+    color: var(--white);
     text-weight: bold;
     margin-right: 5px;
     cursor: pointer;
@@ -96,8 +115,8 @@ label {
 
 .category-container {
     display: flex;
-    width: 385px;
-    height: 400px;
+    width: 330px;
+    height: 380px;
     background-color: var(--secondary);
     margin: 10px;
     flex-direction: column;
@@ -105,12 +124,90 @@ label {
     align-items: center;
     border-radius: 10px;
     cursor: pointer;
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.category-container:hover {
+    transform: scale(1.05);
+}
+
+.cat-btn-div {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 10px;
+    justify-content: space-evenly;
+    align-items: center;
 }
 
 .cat-img {
     width: 280px;
     height: 250px;
     border-radius: 10px;
+}
+
+.equipment-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.eq-container {
+    display: flex;
+    width: 730px;
+    margin: 15px 0px 5px 10px;
+    flex-direction: row;
+    border: 2px solid var(--gray);
+    border-radius: 10px;
+    padding: 20px;
+    align-items: flex-start;
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.eq-container:hover {
+    transform: scale(1.02);
+}
+
+.eq-img {
+    width: 150px;
+    height: 150px;
+    border-radius: 10px;
+    margin-right: 20px;
+}
+
+.eq-quantity {
+    color: var(--gray);
+    float: right;
+    margin-left: auto;
+}
+
+.eq-bottom-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.ghost-div {
+    background: var(--white);
+    height: 1px;
+    width: 1px;
+}
+
+.eq-btn {
+    padding: 4px 20px;
+    border: 1px solid var(--action);
+    border-radius: 15px;
+    color: var(--white);
+    cursor: pointer;
+    background: var(--action);
+}
+
+.eq-price {
+    color: var(--action);
+    margin: 0px;
 }
 
 .modal-overlay {
@@ -158,29 +255,79 @@ label {
 }
 
 .filter-body {
-    width: 385px;
-    height: 100px;
-    border: 2px solid var(--gray);
-    border-radius: 10px;
+    width: 370px;
     margin: 10px;
 }
 
-.equipment-body {
+.filter-container {
+    border: 2px solid var(--gray);
+    border-radius: 10px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    margin: 10px 0px;
+    padding 10px 10px;
     align-items: center;
 }
 
-.equipment-container {
+select {
+    border: 1px solid var(--gray);
+    border-radius: 15px;
+    padding: 5px;
+    width: 100%;
+}
+
+.filter-label {
+    width: 90%;
+    margin: 15px 0px 5px 0px;
+}
+
+.filter-input {
+    width: 90%;
+    border-radius: 5px;
+    border: 1px solid var(--gray);
+}
+
+.filter-divider {
+    width: 90%;
+    height: 1px;
+    background: var(--gray);
+}
+
+.filter-price-divider {
     display: flex;
-    width: 770px;
-    height: 300px;
-    margin: 10px;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
+}
+
+.filter-checkbox-div {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
     align-items: center;
-    border-radius: 10px;
-    border: 2px solid var(--gray);
-    border-radius: 10px;
+    width: 90%;
+}
+
+.filter-checkbox {
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.filter-input-price {
+    display: flex;
+    width: 42%;
+    border-radius: 5px;
+    border: 1px solid var(--gray);
+}
+
+.filter-price-label {
+    display: flex;
+    color: var(--gray);
+    margin: 0px 5px;
+    align-items: center;
+}
+
+.filter-btn {
+    background: var(--secondary);
+    margin: 20px 0px;
+    font-size: 14px;
 }

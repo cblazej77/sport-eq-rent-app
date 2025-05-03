@@ -10,8 +10,9 @@
     <div class="top-lane-section">
         <h1 class="txt-white">[[${categoryName}]]</h1>
         <div class="nav-container">
-            <a th:href="@{/categories}" class="btn btn-primary" th:text="#{eq_redirect_cat}"></a>
-            <a th:text="#{eq_redirect_res}" th:href="@{/reservations}"></a>
+            <button th:onclick="window.location.href='/categories';" class="nav-button" th:text="#{cat_title}"></button>
+            <button th:if="${user != null}" class="nav-button" th:text="#{cat_redirect_reservations}"
+                    th:onclick="window.location.href='/reservations';"></button>
         </div>
     </div>
     <div class="top-lane-account">
@@ -23,67 +24,88 @@
 </div>
 <div class="center-body">
     <form method="get" th:action="@{/categories/{id}(id=${categoryID})}">
-    <div class="filter-body">
-        <select name="sortType">
-            <option th:value="default" th:text="#{sort_title}" th:selected="${sortType == default}"></option>
-            <option th:value="priceLH" th:text="#{sort_price_LH}" th:selected="${sortType == sort_price_LH}"></option>
-            <option th:value="priceHL" th:text="#{sort_price_HL}" th:selected="${sortType == sort_price_HL}"></option>
-            <option th:value="quantityLH" th:text="#{sort_quantity_LH}" th:selected="${sortType == sort_quantity_LH}"></option>
-            <option th:value="quantityHL" th:text="#{sort_quantity_HL}" th:selected="${sortType == sort_quantity_HL}"></option>
-        </select>
-        <div style="flex-direction: column; display: flex;">
-            <h1 th:text="#{filters_title}"></h1>
-            <label th:text="#{filters_name}"></label>
-            <input id="filterName" name="filterName" type="text" th:value="${filterName}">
-            <label th:text="#{filters_price}"></label>
-            <input id="filterMinPrice" name="filterPriceMin" type="number" th:placeholder="#{filters_price_from}" th:value="${filterPriceMin}">
-            <input id="filterMaxPrice" name="filterPriceMax" type="number" th:placeholder="#{filters_price_to}" th:value="${filterPriceMax}">
-            <label th:text="#{filters_available_title}"></label>
-            <input type="checkbox" name="filterAvailable" th:checked="${filterAvailable}">
-            <label th:text="#{filters_available}"></label>
-            <button id="filterBtn" type="submit" th:text="#{filters_btn}"></button>
+        <div class="filter-body">
+            <select name="sortType">
+                <option th:value="default" th:text="#{sort_title}" th:selected="${sortType == default}"></option>
+                <option th:value="priceLH" th:text="#{sort_price_LH}"
+                        th:selected="${sortType == sort_price_LH}"></option>
+                <option th:value="priceHL" th:text="#{sort_price_HL}"
+                        th:selected="${sortType == sort_price_HL}"></option>
+                <option th:value="quantityLH" th:text="#{sort_quantity_LH}"
+                        th:selected="${sortType == sort_quantity_LH}"></option>
+                <option th:value="quantityHL" th:text="#{sort_quantity_HL}"
+                        th:selected="${sortType == sort_quantity_HL}"></option>
+            </select>
+            <div class="filter-container">
+                <h2 th:text="#{filters_title}"></h2>
+                <div class="filter-divider"></div>
+                <label class="filter-label" th:text="#{filters_name}"></label>
+                <input class="filter-input" id="filterName" name="filterName" type="text" th:value="${filterName}">
+                <label class="filter-label" th:text="#{filters_price}"></label>
+                <div class="filter-price-divider">
+                    <input class="filter-input-price" id="filterMinPrice" name="filterPriceMin" type="number"
+                           th:placeholder="#{filters_price_from}" th:value="${filterPriceMin}">
+                    <label class="filter-price-label">-</label>
+                    <input class="filter-input-price" id="filterMaxPrice" name="filterPriceMax" type="number"
+                           th:placeholder="#{filters_price_to}" th:value="${filterPriceMax}">
+                </div>
+                <label class="filter-label" th:text="#{filters_available_title}"></label>
+                <div class="filter-checkbox-div">
+                    <input class="filter-checkbox" type="checkbox" name="filterAvailable"
+                           th:checked="${filterAvailable}">
+                    <label th:text="#{filters_available}"></label>
+                </div>
+                <button class="filter-btn" id="filterBtn" type="submit" th:text="#{filters_btn}"></button>
+            </div>
         </div>
-    </div>
     </form>
     <div class="equipment-body">
-        <div th:if="${user != null and user.role == 'ADMIN'}" class="equipment-container"
-             onclick="showModal(null)">
-            <a th:text="#{eq_btn_add}">
-            </a>
+        <div th:if="${user != null and user.role == 'ADMIN'}" class="eq-container"
+             onclick="showModal(null)" style="align-items: center; cursor: pointer;">
+            <h1 style="margin: 0px;" class="txt-gray">+</h1>
+            <h2 style="margin: 0px 20px;" th:text="#{eq_btn_add}"></h2>
         </div>
 
-        <div th:each="equipment : ${equipmentList}" class="equipment-container">
-            <div>
-                <img th:src="@{/equipment/image/{id}(id=${equipment.equipmentID})}"
-                     style="width: 100px; height: 100px;">
-                <h3 th:text="#{filters_name} + ': ' + ${equipment.name}"></h3>
-                <p th:text="#{filters_price} + ': ' + ${equipment.price}"></p>
-                <label th:text="#{eq_modal_desc} + ': ' + ${equipment.description}"></label>
-                <label th:text="#{eq_modal_quantity} + ': ' + ${equipment.quantity}"></label>
-            </div>
-            <a th:if="${user != null and user.role == 'ADMIN'}"
-               th:text="#{eq_btn_edit}"
-               th:data-id="${equipment.equipmentID}"
-               th:data-name="${equipment.name}"
-               th:data-description="${equipment.description}"
-               th:data-price="${equipment.price}"
-               th:data-quantity="${equipment.quantity}"
-               th:data-image="@{/equipment/image/{id}(id=${equipment.equipmentID})}"
-               onclick="showModal(this)">
-            </a>
-            <form method="post" th:action="@{/equipment_delete/{id}(id=${equipment.equipmentID})}"
-                  th:if="${user != null and user.role == 'ADMIN'}">
-                <input type="hidden" name="_method" value="DELETE">
-                <div>
-                    <button type="submit" th:text="#{eq_btn_delete}"></button>
+        <div th:each="equipment : ${equipmentList}" class="eq-container">
+            <img th:src="@{/equipment/image/{id}(id=${equipment.equipmentID})}"
+                 class="eq-img">
+            <div style="width: 100%; display: flex; flex-direction: column;">
+                <label class="eq-quantity"
+                       style="align-self: flex-end;"
+                       th:text="#{eq_modal_quantity} + ': ' + ${equipment.quantity}">
+                </label>
+                <h2 th:text="${equipment.name}"></h2>
+                <label th:text="${equipment.description}"></label>
+                <div class="eq-bottom-container">
+                    <a th:if="${user != null and user.role == 'ADMIN'}"
+                       th:text="#{eq_btn_edit}"
+                       th:data-id="${equipment.equipmentID}"
+                       th:data-name="${equipment.name}"
+                       th:data-description="${equipment.description}"
+                       th:data-price="${equipment.price}"
+                       th:data-quantity="${equipment.quantity}"
+                       th:data-image="@{/equipment/image/{id}(id=${equipment.equipmentID})}"
+                       class="eq-btn"
+                       onclick="showModal(this)">
+                    </a>
+                    <form method="post" th:action="@{/equipment_delete/{id}(id=${equipment.equipmentID})}"
+                          th:if="${user != null and user.role == 'ADMIN'}">
+                        <input type="hidden" name="_method" value="DELETE">
+
+                            <button type="submit" th:text="#{eq_btn_delete}"></button>
+
+                    </form>
+                    <a th:if="${user != null and user.role == 'USER'}"
+                       th:text="#{eq_btn_reserve}"
+                       th:data-id="${equipment.equipmentID}"
+                       th:data-email="${user.email}"
+                       class="eq-btn"
+                       onclick="showReservationModal(this)">
+                    </a>
+                    <div th:if="${user == null}" class="ghost-div"></div>
+                    <h2 class="eq-price" th:text="#{eq.price(${equipment.price})}"></h2>
                 </div>
-            </form>
-            <a th:if="${user != null and user.role == 'USER'}"
-               th:text="#{eq_btn_reserve}"
-               th:data-id="${equipment.equipmentID}"
-               th:data-email="${user.email}"
-               onclick="showReservationModal(this)">
-            </a>
+            </div>
         </div>
     </div>
 </div>
@@ -127,7 +149,8 @@
             <label th:text="#{res_modal_quantity}"></label>
             <input type="number" name="quantity">
             <label th:text="#{reservation_modal_date_pickup}"></label>
-            <input type="date" name="pickupDate" th:min="${minPickupDate}" th:max="${maxPickupDate}" onchange="showReturnDate(this.value)">
+            <input type="date" name="pickupDate" th:min="${minPickupDate}" th:max="${maxPickupDate}"
+                   onchange="showReturnDate(this.value)">
             <label id="lab"></label>
             <label id="returnDateLabel" th:text="#{reservation_modal_date_return}" style="display: none;"></label>
             <input id="returnDateInput" type="date" name="returnDate" th:max="${maxReturnDate}" style="display: none;">

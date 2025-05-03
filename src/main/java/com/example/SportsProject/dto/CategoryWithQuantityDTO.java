@@ -11,5 +11,5 @@ public class CategoryWithQuantityDTO {
     private Long categoryID;
     private String name;
     private byte[] image;
-    private int quantity;
+    private Long quantity;
 }

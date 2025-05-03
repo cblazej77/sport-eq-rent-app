@@ -9,19 +9,25 @@
 <body>
 <div class="top-lane">
     <div class="top-lane-section">
-        <h1 class="txt-white" th:text="#{cat_title}"></h1>
+        <h1 class="txt-white">Sport equipment rent</h1>
         <div class="nav-container">
             <button class="nav-button" th:text="#{cat_title}"></button>
-            <button th:if="${user != null}" class="nav-button" th:text="#{cat_redirect_reservations}" th:onclick="window.location.href='/reservations';"></button>
+            <button th:if="${user != null}" class="nav-button"
+                    th:text="#{cat_redirect_reservations}"
+                    th:onclick="window.location.href='/reservations';"></button>
         </div>
     </div>
     <div class="top-lane-account">
-        <div th:if="${user != null}">
-            <span th:text="${user.email}"></span>
-            <span th:text="${user.role}"></span>
-            <a th:href="@{/logout}" class="btn btn-danger" th:text="#{cat_btn_logout}"></a>
+        <div th:if="${user != null}" style="display: flex; flex-direction: column;">
+            <div style="margin-bottom: 10px;">
+                <label class="txt-white" th:text="#{nav.logged(${user.email})}"></label>
+                <label class="txt-white" th:if="${user.role == 'ADMIN'}" th:text="[ADMIN]"></label>
+            </div>
+            <button class="nav-button" th:text="#{cat_btn_logout}"
+                    th:onclick="window.location.href='/logout';"></button>
         </div>
-        <a th:if="${user == null}" th:href="@{/sign_in}" class="btn btn-primary" th:text="#{cat_btn_sign_in}"></a>
+        <button th:if="${user == null}" class="nav-button" th:text="#{cat_btn_sign_in}"
+                th:onclick="window.location.href='/sign_in';"></button>
     </div>
 </div>
 <div class="center-body">
@@ -37,21 +43,23 @@
             <img th:src="@{/categories/image/{id}(id=${category.categoryID})}" alt="Category Image"
                  class="cat-img"/>
             <h2 th:text="${category.name}"></h2>
-            <label class="txt-gray" th:text="#{cat_quantity} + ${category.quantity}"></label>
+            <label style="font-size: 18px; cursor: pointer;" class="txt-gray" th:text="#{cat_quantity} + ${category.quantity}"></label>
+        <div th:if="${user != null && user.role == 'ADMIN'}" class="filter-divider" style="margin: 20px 0px;"></div>
+        <div class="cat-btn-div">
             <a th:if="${user != null and user.role == 'ADMIN'}"
                th:data-id="${category.categoryID}"
                th:data-name="${category.name}"
                th:data-image="@{/categories/image/{id}(id=${category.categoryID})}"
                th:text="#{cat_btn_edit}"
-               onclick="showModal(this)">
+               onclick="event.stopPropagation(); showModal(this)"
+                class="btn">
             </a>
             <form method="post" th:action="@{/categories/delete/{id}(id=${category.categoryID})}"
-                  th:if="${user != null and user.role == 'ADMIN'}">
+                  th:if="${user != null and user.role == 'ADMIN'}" onclick="event.stopPropagation()">
                 <input type="hidden" name="_method" value="DELETE">
-                <div>
-                    <button type="submit" th:text="#{cat_btn_delete}"></button>
-                </div>
+                <button style="border: 0px;" type="submit" th:text="#{cat_btn_delete}"></button>
             </form>
+        </div>
     </div>
 </div>
 

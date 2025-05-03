@@ -30,7 +30,10 @@ public class CategoryService {
             categoryWithQuantityDTO.setCategoryID(category.getCategoryID());
             categoryWithQuantityDTO.setImage(category.getImage());
             categoryWithQuantityDTO.setName(category.getName());
-            categoryWithQuantityDTO.setQuantity(10);
+
+            Long quantity = categoryRepository.sumEquipmentQuantityByCategoryId(category.getCategoryID());
+            categoryWithQuantityDTO.setQuantity(quantity == null ? 0 : quantity);
+
             categoryWithQuantityDTOS.add(categoryWithQuantityDTO);
         }
 
