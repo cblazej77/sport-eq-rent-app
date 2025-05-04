@@ -8,11 +8,17 @@ import com.example.SportsProject.entity.Equipment;
 import com.example.SportsProject.repository.CategoryRepository;
 import com.example.SportsProject.repository.EquipmentRepository;
 import com.example.SportsProject.service.EquipmentService;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 public class EquipmentController {
@@ -26,10 +32,26 @@ public class EquipmentController {
         this.categoryRepository = categoryRepository;
     }
 
+//    @PostMapping("/equipment_add")
+//    public String equipmentAdd(@Valid EquipmentAddDTO equipmentAddDTO, BindingResult bindingResult) throws IOException {
+//        equipmentService.equipmentAdd(equipmentAddDTO);
+//        return "redirect:/categories/" + equipmentAddDTO.getCategoryID();
+//    }
+
     @PostMapping("/equipment_add")
-    public String equipmentAdd(EquipmentAddDTO equipmentAddDTO) throws IOException {
+    public ResponseEntity<?> addEquipment(
+            @ModelAttribute @Valid EquipmentAddDTO equipmentAddDTO,
+            BindingResult result) throws IOException {
+
+        if (result.hasErrors()) {
+            List<String> errors = result.getFieldErrors().stream()
+                    .map(FieldError::getDefaultMessage)
+                    .collect(Collectors.toList());
+            return ResponseEntity.badRequest().body(errors);
+        }
+
         equipmentService.equipmentAdd(equipmentAddDTO);
-        return "redirect:/categories/" + equipmentAddDTO.getCategoryID();
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/equipment_edit")

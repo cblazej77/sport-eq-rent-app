@@ -2,14 +2,14 @@
 - tokens    DONE
 - admin account    DONE
 - password hashed with PBKDF2   DONE
-- input regexes
 - availability counter for equipment    DONE
-- all layouts
-- email confirmation
-- bean validation with own annotations
+- all layouts   DONE
+- email confirmation    DONE
 - reservations (RESERVED, IN_USE, RETURNED, CANCELLED)   DONE
 - paging (back-end & front-end)
 - sorting (front-end)
+- input regexes
+- bean validation with own annotations  IN PROGRESS (register, edit eq, add cat, edit cat, reserve)
 
 Reservation steps:
 1. User finds and reserves an item  OK

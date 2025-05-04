@@ -5,23 +5,52 @@
     <title th:text="#{sign_in_title}"></title>
 </head>
 <body>
-    <h2 th:text="#{sign_in_title}"></h2>
-    <form th:action="@{sign_in_action}" method="post">
-<div>
-    <label th:text="#{sign_in_input_username}"></label>
-    <input type="text" name="email">
-</div>
-<div>
-    <label th:text="#{sign_in_input_password}"></label>
-    <input type="password" name="password">
-</div>
-        <button type="submit" th:text="#{sign_in_btn_submit}"></button>
-    </form>
+<h2 th:text="#{sign_in_title}"></h2>
+<form th:action="@{sign_in_action}" method="post" th:object="${userLoginDTO}">
     <div>
-        <a th:href="@{/sign_up}" class="btn btn-primary" th:text="#{sign_in_redirect}"></a>
+        <label th:text="#{sign_in_input_username}"></label>
+        <input type="text" th:field="*{email}" />
+        <span style="color: red;" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
     </div>
+    <div>
+        <label th:text="#{sign_in_input_password}"></label>
+        <input type="password" th:field="*{password}" />
+        <span style="color: red;" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+    </div>
+    <div>
+        <input th:selected="false" type="checkbox" name="sendEmail">
+        <label th:text="#{sign_in.input.sendEmail}"></label>
+    </div>
+    <div th:if="${loginError}" style="color:red;" th:text="${loginError}"></div>
+    <button type="submit" th:text="#{sign_in_btn_submit}"></button>
+</form>
 <div>
-
+    <a th:href="@{/sign_up}" class="btn btn-primary" th:text="#{sign_in_redirect}"></a>
 </div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script th:inline="javascript">
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('message')) {
+        if (urlParams.get('message') === 'registered') {
+            Toastify({
+                text: [[#{sign_in.registered}]],
+                duration: 10000,
+                gravity: "top",
+                position: "center",
+                background: "green"
+            }).showToast();
+        }
+        else if (urlParams.get('message') === 'verified') {
+            Toastify({
+                text: [[#{sign_in.verified}]],
+                duration: 10000,
+                gravity: "top",
+                position: "center",
+                background: "green"
+            }).showToast();
+        }
+    }
+</script>
 </body>
 </html>

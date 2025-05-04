@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Controller
@@ -27,14 +28,14 @@ public class EmailVerificationController {
     public String verifyEmail(@RequestParam String token) {
         EmailVerification emailVerification = emailVerificationRepository.findByToken(token);
 
-        if (emailVerification != null) { // ESPIRY DATE
+        if (emailVerification != null && LocalDateTime.parse(emailVerification.getExpiryDate()).isAfter(LocalDateTime.now())) {
             User user = emailVerification.getUser();
             user.setVerified(true);
             userRepository.save(user);
 
-            return "sign_in";
+            return "redirect:/sign_in?message=verified";
         } else {
-            return "categories";
+            return "redirect:/categories";
         }
     }
 }

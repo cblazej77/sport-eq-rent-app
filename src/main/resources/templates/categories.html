@@ -28,10 +28,15 @@
         </div>
         <button th:if="${user == null}" class="nav-button" th:text="#{cat_btn_sign_in}"
                 th:onclick="window.location.href='/sign_in';"></button>
+        <form method="get" action="#">
+            <select name="lang" onchange="this.form.submit()">
+                <option value="en" th:selected="${#locale.language == 'en'}">EN</option>
+                <option value="pl" th:selected="${#locale.language == 'pl'}">PL</option>
+            </select>
+        </form>
     </div>
 </div>
 <div class="center-body">
-
     <div th:if="${user != null and user.role == 'ADMIN'}" class="category-container"
          onclick="showModal(null)">
         <div class="plus-container">

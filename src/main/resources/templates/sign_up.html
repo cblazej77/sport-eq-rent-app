@@ -6,23 +6,28 @@
 </head>
 <body>
 <h2 th:text="#{sign_up_title}"></h2>
-<form th:action="@{/sign_up_action}" method="post">
+<form th:action="@{/sign_up_action}" method="post" th:object="${userRegisterDTO}">
     <div>
         <label th:text="#{sign_up_input_name}"></label>
-        <input type="text" name="name">
+        <input type="text" th:field="*{name}" />
+        <span style="color: red;" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
     </div>
     <div>
         <label th:text="#{sign_up_input_surname}"></label>
-        <input type="text" name="surname">
+        <input type="text" th:field="*{surname}" />
+        <span style="color: red;" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></span>
     </div>
     <div>
         <label th:text="#{sign_up_input_email}"></label>
-        <input type="text" name="email">
+        <input type="text" th:field="*{email}" />
+        <span style="color: red;" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
     </div>
     <div>
         <label th:text="#{sign_up_input_password}"></label>
-        <input type="password" name="password">
+        <input type="text" th:field="*{password}" />
+        <span style="color: red;" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
     </div>
+    <div th:if="${registerError}" style="color:red;" th:text="${registerError}"></div>
     <button type="submit" th:text="#{sign_up_btn_submit}"></button>
 </form>
 <a th:href="@{/sign_in}" class="btn btn-primary" th:text="#{sign_up_redirect}"></a>

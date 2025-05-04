@@ -20,6 +20,12 @@
         <div th:if="${user != null}">
             <a th:ref="@{/logout}" th:text="#{eq_btn_logout}"></a>
         </div>
+        <form method="get" action="#">
+            <select name="lang" onchange="this.form.submit()">
+                <option value="en" th:selected="${#locale.language == 'en'}">EN</option>
+                <option value="pl" th:selected="${#locale.language == 'pl'}">PL</option>
+            </select>
+        </form>
     </div>
 </div>
 <div class="center-body">
@@ -159,6 +165,45 @@
     </form>
 </div>
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
 <script th:src="@{/js/equipment.js}"></script>
+<script>
+document.getElementById("equipmentForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+
+    fetch("/equipment_add", {
+        method: "POST",
+        body: formData
+    })
+    .then(async res => {
+        if (!res.ok) {
+            const errors = await res.json();
+            errors.forEach(err => showToast(err, "error"));
+        } else {
+            showToast("Sprzęt został dodany!", "success");
+            hideModal();
+            form.reset();
+            setTimeout(() => {
+                location.reload();
+            }, 1200);
+        }
+    })
+    .catch(() => showToast("Błąd serwera", "error"));
+});
+
+function showToast(msg, type = "success") {
+    Toastify({
+        text: msg,
+        duration: 3000,
+        gravity: "top",
+        position: "center",
+        backgroundColor: type === "error" ? "var(--primary)" : "green",
+    }).showToast();
+}
+</script>
 </body>
 </html>
