@@ -53,12 +53,96 @@ button {
     cursor: pointer;
 }
 
+.txt-primary {
+    color: var(--primary);
+}
+
 .txt-white {
     color: var(--white);
 }
 
 .txt-gray {
     color: var(--gray);
+}
+
+.body-in_center {
+    justify-content: center;
+}
+
+.sign-container {
+    border: 1px solid var(--gray);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 32px;
+    margin: 16px 0px;
+    width: 360px;
+    box-sizing: border-box;
+}
+
+.sign-title {
+    text-weight: normal;
+    margin: 0px 0px 32px 0px;
+}
+
+.sign-input {
+    border-radius: 5px;
+    border: 1px solid var(--gray);
+    width: 100%;
+    padding: 5px 12px;
+    box-sizing: border-box;
+}
+
+.sign-label {
+    align-self: flex-start;
+    margin-bottom: 2px;
+}
+
+.sign-column-div {
+    display: flex;
+    align-self: center;
+    padding: 0px;
+    margin: 0px 0px 15px 0px;
+    flex-direction: column;
+    width: 100%;
+}
+
+.sign-row-div {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+}
+
+.sign-checkbox {
+    margin: 0px 5px 0px 0px;
+}
+
+.sign-btn {
+    border-radius: 5px;
+    width: 100%;
+    padding: 5px 12px;
+    color: var(--white);
+    box-sizing: border-box;
+    margin: 20px 0px 0px 0px;
+}
+
+.sign-btn-home {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    border-radius: 5px;
+    width: 100%;
+    padding: 5px 12px;
+    color: var(--white);
+    background-color: var(--action);
+    box-sizing: border-box;
+    text-decoration: none;
+}
+
+.sign-error {
+    margin-top: 2px;
 }
 
 .top-lane {

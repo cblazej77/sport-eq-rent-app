@@ -1,5 +1,6 @@
 package com.example.SportsProject.service;
 
+import com.example.SportsProject.dto.ReservationAddDTO;
 import com.example.SportsProject.entity.Equipment;
 import com.example.SportsProject.entity.Reservation;
 import com.example.SportsProject.entity.User;
@@ -46,14 +47,10 @@ public class ReservationService {
         return reservationList;
     }
 
-    public Reservation addReservation(int quantity,
-                                      String pickupDate,
-                                      String returnDate,
-                                      String email,
-                                      Long equipmentID) {
+    public Reservation addReservation(ReservationAddDTO reservationAddDTO) {
 
         Reservation reservation = new Reservation();
-        Equipment equipment = equipmentRepository.getEquipmentByEquipmentID(equipmentID);
+        Equipment equipment = equipmentRepository.getEquipmentByEquipmentID(reservationAddDTO.getEquipmentID());
 
         String resCodeDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         String resCodeID = String.format("%04d", reservationRepository.count() % 10000);
@@ -61,17 +58,20 @@ public class ReservationService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime localDateTime = LocalDateTime.now();
 
+        String pickupDate = reservationAddDTO.getPickupDate().toString();
+        String returnDate = reservationAddDTO.getReturnDate().toString();
+
         int daysInUse = Period.between(LocalDate.parse(pickupDate), LocalDate.parse(returnDate)).getDays();
 
         reservation.setStatus("RESERVED");
         reservation.setReservationCode("RES-" + resCodeDate + "-" + resCodeID);
         reservation.setReservationDate(localDateTime.toString());
-        reservation.setQuantity(quantity);
+        reservation.setQuantity(reservation.getQuantity());
         reservation.setPickupDate(pickupDate);
         reservation.setReturnDate(returnDate);
-        reservation.setUser(userRepository.findUserByEmail(email));
+        reservation.setUser(userRepository.findUserByEmail(reservationAddDTO.getEmail()));
         reservation.setEquipment(equipment);
-        reservation.setCost(quantity * equipment.getPrice() * (daysInUse));
+        reservation.setCost(reservation.getQuantity() * equipment.getPrice() * (daysInUse));
 
         equipment.setQuantity(equipment.getQuantity() - 1);
 

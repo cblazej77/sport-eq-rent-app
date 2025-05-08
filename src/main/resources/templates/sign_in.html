@@ -3,31 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="#{sign_in_title}"></title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
-<body>
-<h2 th:text="#{sign_in_title}"></h2>
-<form th:action="@{sign_in_action}" method="post" th:object="${userLoginDTO}">
-    <div>
-        <label th:text="#{sign_in_input_username}"></label>
-        <input type="text" th:field="*{email}" />
-        <span style="color: red;" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+<body class="body-in_center">
+<form class="sign-container" th:action="@{sign_in_action}" method="post" th:object="${userLoginDTO}">
+    <h2 class="sign-title" th:text="#{sign_in_title}"></h2>
+    <div class="sign-column-div">
+        <label class="sign-label" th:text="#{sign_in_input_username}"></label>
+        <input class="sign-input" type="text" th:field="*{email}"/>
+        <span class="sign-error" style="color: red;" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
     </div>
-    <div>
-        <label th:text="#{sign_in_input_password}"></label>
-        <input type="password" th:field="*{password}" />
-        <span style="color: red;" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+    <div class="sign-column-div">
+        <label class="sign-label" th:text="#{sign_in_input_password}"></label>
+        <input class="sign-input" type="password" th:field="*{password}"/>
+        <span class="sign-error" style="color: red;" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
     </div>
-    <div>
-        <input th:selected="false" type="checkbox" name="sendEmail">
+    <div class="sign-row-div">
+        <input class="sign-checkbox" th:selected="false" type="checkbox" name="sendEmail">
         <label th:text="#{sign_in.input.sendEmail}"></label>
     </div>
     <div th:if="${loginError}" style="color:red;" th:text="${loginError}"></div>
-    <button type="submit" th:text="#{sign_in_btn_submit}"></button>
+    <button class="sign-btn" type="submit" th:text="#{sign_in_btn_submit}"></button>
+    <a th:href="@{/categories}" class="sign-btn-home" th:text="#{sign_redirect}"></a>
 </form>
-<div>
-    <a th:href="@{/sign_up}" class="btn btn-primary" th:text="#{sign_in_redirect}"></a>
-</div>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+<a class="sign-link" th:href="@{/sign_up}" th:text="#{sign_in_redirect}"></a>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"/>
 <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <script th:inline="javascript">
     const urlParams = new URLSearchParams(window.location.search);
@@ -51,6 +52,8 @@
             }).showToast();
         }
     }
+
+
 </script>
 </body>
 </html>

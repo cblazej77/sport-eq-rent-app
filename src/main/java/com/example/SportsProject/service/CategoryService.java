@@ -1,5 +1,7 @@
 package com.example.SportsProject.service;
 
+import com.example.SportsProject.dto.CategoryAddDTO;
+import com.example.SportsProject.dto.CategoryEditDTO;
 import com.example.SportsProject.dto.CategoryWithQuantityDTO;
 import com.example.SportsProject.entity.Category;
 import com.example.SportsProject.entity.Equipment;
@@ -40,9 +42,10 @@ public class CategoryService {
         return categoryWithQuantityDTOS;
     }
 
-    public Category categoryAdd(String name, MultipartFile image) {
+    public Category categoryAdd(CategoryAddDTO categoryAddDTO) {
         Category category = new Category();
-        category.setName(name);
+        category.setName(categoryAddDTO.getName());
+        MultipartFile image = categoryAddDTO.getImage();
         if (image != null && !image.isEmpty()) {
             try {
                 category.setImage(image.getBytes());
@@ -53,10 +56,11 @@ public class CategoryService {
         return categoryRepository.save(category);
     }
 
-    public Category categoryEdit(Long categoryID, String name, MultipartFile image) {
-        Category category = categoryRepository.getReferenceById(categoryID);
+    public Category categoryEdit(CategoryEditDTO categoryEditDTO) {
+        Category category = categoryRepository.getReferenceById(categoryEditDTO.getCategoryID());
 
-        category.setName(name);
+        category.setName(categoryEditDTO.getName());
+        MultipartFile image = categoryEditDTO.getImage();
         if (image != null && !image.isEmpty()) {
             try {
                 category.setImage(image.getBytes());

@@ -1,6 +1,4 @@
 function showModal(element) {
-    console.log("showModal was called");
-
     const modalTitle = document.getElementById('modal-title');
     const categoryIdField = document.getElementById('categoryID');
     const categoryNameField = document.getElementById('categoryName');

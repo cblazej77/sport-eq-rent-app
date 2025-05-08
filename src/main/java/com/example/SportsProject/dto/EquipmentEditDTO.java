@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 public class EquipmentEditDTO {
 
-    @NotNull(message = "{error.required.equipmentID}")
     private Long equipmentID;
 
     @NotBlank(message = "{error.required.name}")

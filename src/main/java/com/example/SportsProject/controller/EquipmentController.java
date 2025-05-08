@@ -39,7 +39,7 @@ public class EquipmentController {
 //    }
 
     @PostMapping("/equipment_add")
-    public ResponseEntity<?> addEquipment(
+    public ResponseEntity<?> equipmentAdd(
             @ModelAttribute @Valid EquipmentAddDTO equipmentAddDTO,
             BindingResult result) throws IOException {
 
@@ -55,19 +55,25 @@ public class EquipmentController {
     }
 
     @PutMapping("/equipment_edit")
-    public String equipmentEdit(@ModelAttribute EquipmentEditDTO equipmentEditDTO) throws IOException {
-        System.out.println(equipmentEditDTO.getEquipmentID());
-        System.out.println(equipmentEditDTO.getCategoryID());
+    public ResponseEntity<?> equipmentEdit(@ModelAttribute @Valid EquipmentEditDTO equipmentEditDTO,
+                                BindingResult result) throws IOException {
+        if (result.hasErrors()) {
+            List<String> errors = result.getFieldErrors().stream()
+                    .map(FieldError::getDefaultMessage)
+                    .collect(Collectors.toList());
+            return ResponseEntity.badRequest().body(errors);
+        }
+
         equipmentService.equipmentEdit(equipmentEditDTO);
-        return "redirect:/categories/" + equipmentEditDTO.getCategoryID();
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/equipment_delete/{equipmentID}")
-    public String equipmentDelete(@PathVariable Long equipmentID){
+    public ResponseEntity<?> equipmentDelete(@PathVariable Long equipmentID){
         Long categoryID = equipmentRepository.getEquipmentByEquipmentID(equipmentID).getCategory().getCategoryID();
         equipmentService.equipmentDelete(equipmentID);
 
-        return "redirect:/categories/" + categoryID;
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/equipment/image/{equipmentID}")

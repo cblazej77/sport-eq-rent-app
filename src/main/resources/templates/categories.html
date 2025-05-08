@@ -59,7 +59,7 @@
                onclick="event.stopPropagation(); showModal(this)"
                 class="btn">
             </a>
-            <form method="post" th:action="@{/categories/delete/{id}(id=${category.categoryID})}"
+            <form class="deleteForm" id="deleteForm" method="post" th:action="@{/categories/delete/{id}(id=${category.categoryID})}"
                   th:if="${user != null and user.role == 'ADMIN'}" onclick="event.stopPropagation()">
                 <input type="hidden" name="_method" value="DELETE">
                 <button style="border: 0px;" type="submit" th:text="#{cat_btn_delete}"></button>
@@ -95,6 +95,79 @@
         </div>
     </form>
 </div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <script th:src="@{/js/categories.js}"></script>
+<script th:inline="javascript">
+document.querySelectorAll(".deleteForm").forEach(form => {
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const actionUrl = form.getAttribute("action");
+
+        fetch(actionUrl, {
+            method: "DELETE"
+        })
+        .then(res => {
+            if (res.ok) {
+                showToast([[#{cat.toast.deleted}]], "success");
+                setTimeout(() => {
+                    location.reload();
+                }, 1200);
+            } else {
+                showToast([[#{error.unknown}]], "error");
+            }
+        })
+        .catch(() => showToast([[#{error.unknown}]], "error"));
+    });
+});
+
+document.getElementById("categoryForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+
+    const method = form.querySelector("#hiddenMethod").value;
+    const isEdit = method === "PUT";
+
+    const url = isEdit ? "/categories/edit" : "/categories/add";
+
+    fetch(url, {
+        method: isEdit ? "PUT" : "POST",
+        body: formData
+    })
+    .then(async res => {
+        if (!res.ok) {
+            try {
+                const errors = await res.json();
+                errors.forEach(err => showToast(err, "error"));
+            } catch {
+                showToast([[#{error.unknown}]], "error");
+            }
+        } else {
+            const successMessage = isEdit
+                ? [[#{cat.toast.edited}]]
+                : [[#{cat.toast.added}]];
+            showToast(successMessage, "success");
+            hideModal();
+            form.reset();
+            setTimeout(() => {
+                location.reload();
+            }, 1200);
+        }
+    })
+    .catch(() => showToast([[#{error.unknown}]], "error"));
+});
+
+function showToast(msg, type = "success") {
+    Toastify({
+        text: msg,
+        duration: 3000,
+        gravity: "top",
+        position: "center",
+        background: type === "error" ? "var(--primary)" : "green",
+    }).showToast();
+}
+</script>
 </body>
 </html>

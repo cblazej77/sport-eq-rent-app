@@ -94,12 +94,10 @@
                        class="eq-btn"
                        onclick="showModal(this)">
                     </a>
-                    <form method="post" th:action="@{/equipment_delete/{id}(id=${equipment.equipmentID})}"
+                    <form class="deleteForm" id="deleteForm" method="post" th:action="@{/equipment_delete/{id}(id=${equipment.equipmentID})}"
                           th:if="${user != null and user.role == 'ADMIN'}">
                         <input type="hidden" name="_method" value="DELETE">
-
                             <button type="submit" th:text="#{eq_btn_delete}"></button>
-
                     </form>
                     <a th:if="${user != null and user.role == 'USER'}"
                        th:text="#{eq_btn_reserve}"
@@ -169,22 +167,57 @@
 <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
 <script th:src="@{/js/equipment.js}"></script>
-<script>
+<script th:inline="javascript">
+document.querySelectorAll(".deleteForm").forEach(form => {
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const actionUrl = form.getAttribute("action");
+
+        fetch(actionUrl, {
+            method: "DELETE"
+        })
+        .then(res => {
+            if (res.ok) {
+                showToast([[#{eq.toast.deleted}]], "success");
+                setTimeout(() => {
+                    location.reload();
+                }, 1200);
+            } else {
+                showToast([[#{error.unknown}]], "error");
+            }
+        })
+        .catch(() => showToast([[#{error.unknown}]], "error"));
+    });
+});
+
 document.getElementById("equipmentForm").addEventListener("submit", function(e) {
     e.preventDefault();
     const form = e.target;
     const formData = new FormData(form);
 
-    fetch("/equipment_add", {
-        method: "POST",
+    const method = form.querySelector("#hiddenMethod").value;
+    const isEdit = method === "PUT";
+
+    const url = isEdit ? "/equipment_edit" : "/equipment_add";
+
+    fetch(url, {
+        method: isEdit ? "PUT" : "POST",
         body: formData
     })
     .then(async res => {
         if (!res.ok) {
-            const errors = await res.json();
-            errors.forEach(err => showToast(err, "error"));
+            try {
+                const errors = await res.json();
+                errors.forEach(err => showToast(err, "error"));
+            } catch {
+                showToast([[#{error.unknown}]], "error");
+            }
         } else {
-            showToast("Sprzęt został dodany!", "success");
+            const successMessage = isEdit
+                ? [[#{eq.toast.edited}]]
+                : [[#{eq.toast.added}]];
+            showToast(successMessage, "success");
             hideModal();
             form.reset();
             setTimeout(() => {
@@ -192,7 +225,39 @@ document.getElementById("equipmentForm").addEventListener("submit", function(e) 
             }, 1200);
         }
     })
-    .catch(() => showToast("Błąd serwera", "error"));
+    .catch(() => showToast([[#{error.unknown}]], "error"));
+});
+
+document.getElementById("reservationForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+
+    const url = "/reservations/new";
+
+    fetch(url, {
+        method: "POST",
+        body: formData
+    })
+    .then(async res => {
+        if (!res.ok) {
+            try {
+                const errors = await res.json();
+                errors.forEach(err => showToast(err, "error"));
+            } catch {
+                showToast([[#{error.unknown}]], "error");
+            }
+        } else {
+            const successMessage = [[#{res.toast.added}]];
+            showToast(successMessage, "success");
+            hideModal();
+            form.reset();
+            setTimeout(() => {
+                location.reload();
+            }, 1200);
+        }
+    })
+    .catch(() => showToast([[#{error.unknown}]], "error"));
 });
 
 function showToast(msg, type = "success") {
@@ -201,7 +266,7 @@ function showToast(msg, type = "success") {
         duration: 3000,
         gravity: "top",
         position: "center",
-        backgroundColor: type === "error" ? "var(--primary)" : "green",
+        background: type === "error" ? "var(--primary)" : "green",
     }).showToast();
 }
 </script>

@@ -1,18 +1,24 @@
 package com.example.SportsProject.controller;
 
+import com.example.SportsProject.dto.ReservationAddDTO;
 import com.example.SportsProject.entity.Reservation;
 import com.example.SportsProject.entity.User;
 import com.example.SportsProject.repository.UserRepository;
 import com.example.SportsProject.service.ReservationService;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/reservations")
@@ -43,16 +49,19 @@ public class ReservationController {
     }
 
     @PostMapping("/new")
-    @ResponseBody
-    public String addReservation(@RequestParam int quantity,
-                                 @RequestParam String pickupDate,
-                                 @RequestParam String returnDate,
-                                 @RequestParam String email,
-                                 @RequestParam Long equipmentID) {
+    public ResponseEntity<?> addReservation(@ModelAttribute @Valid ReservationAddDTO reservationAddDTO,
+                                            BindingResult bindingResult) {
 
-        reservationService.addReservation(quantity, pickupDate, returnDate, email, equipmentID);
+        if (bindingResult.hasErrors()) {
+            List<String> errors = bindingResult.getFieldErrors().stream()
+                    .map(FieldError::getDefaultMessage)
+                    .collect(Collectors.toList());
+            return ResponseEntity.badRequest().body(errors);
+        }
 
-        return "reservations";
+        reservationService.addReservation(reservationAddDTO);
+
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/change-status")

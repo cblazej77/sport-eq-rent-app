@@ -3,23 +3,15 @@
 - admin account    DONE
 - password hashed with PBKDF2   DONE
 - availability counter for equipment    DONE
-- all layouts   DONE
 - email confirmation    DONE
 - reservations (RESERVED, IN_USE, RETURNED, CANCELLED)   DONE
+- bean validation with own annotations  DONE
+
+- all layouts (reservations) IN_PROGRESS
+
+- different appearance of eq with quantity 0
 - paging (back-end & front-end)
 - sorting (front-end)
-- input regexes
-- bean validation with own annotations  IN PROGRESS (register, edit eq, add cat, edit cat, reserve)
-
-Reservation steps:
-1. User finds and reserves an item  OK
-– Selects pickup and return dates   OK
-– Reservation is created with status: RESERVED  OK
-- Message with a code is sent via email OK
-2. User goes to the store on the pickup date
-– Brings confirmation   OK
-3. Admin verifies the user and updates the reservation status to IN_USE
-– Equipment is handed over to the user  OK
-4. User returns the item to the store on the return date    OK
-– Admin inspects the item and updates the reservation status to RETURNED    OK
-- User can review the product
+- unit tests
+- images style
+- data for presentation

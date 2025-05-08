@@ -1,5 +1,7 @@
 package com.example.SportsProject.controller;
 
+import com.example.SportsProject.dto.CategoryAddDTO;
+import com.example.SportsProject.dto.CategoryEditDTO;
 import com.example.SportsProject.entity.Category;
 import com.example.SportsProject.entity.Equipment;
 import com.example.SportsProject.entity.User;
@@ -7,11 +9,15 @@ import com.example.SportsProject.repository.CategoryRepository;
 import com.example.SportsProject.repository.UserRepository;
 import com.example.SportsProject.service.CategoryService;
 import com.example.SportsProject.service.EquipmentService;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +26,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/categories")
@@ -58,21 +65,40 @@ public class CategoryController {
     }
 
     @PostMapping("/add")
-    public String addCategory(@RequestParam String name, @RequestParam MultipartFile image) {
-        categoryService.categoryAdd(name, image);
-        return "redirect:/categories";
+    public ResponseEntity<?> addCategory(@ModelAttribute @Valid CategoryAddDTO categoryAddDTO,
+                                         BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            List<String> errors = bindingResult.getFieldErrors().stream()
+                    .map(FieldError::getDefaultMessage)
+                    .collect(Collectors.toList());
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        categoryService.categoryAdd(categoryAddDTO);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/edit")
-    public String editCategory(@RequestParam Long categoryID, @RequestParam String name, @RequestParam MultipartFile image) {
-        categoryService.categoryEdit(categoryID, name, image);
-        return "redirect:/categories";
+    public ResponseEntity<?> editCategory(@ModelAttribute @Valid CategoryEditDTO categoryEditDTO,
+                                          BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            List<String> errors = bindingResult.getFieldErrors().stream()
+                    .map(FieldError::getDefaultMessage)
+                    .collect(Collectors.toList());
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        categoryService.categoryEdit(categoryEditDTO);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/delete/{categoryID}")
-    public String deleteCategory(@PathVariable Long categoryID) {
+    public ResponseEntity<?> deleteCategory(@PathVariable Long categoryID) {
         categoryService.categoryDelete(categoryID);
-        return  "redirect:/categories";
+
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{categoryID}")
