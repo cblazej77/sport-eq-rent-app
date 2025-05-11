@@ -11,8 +11,9 @@
     <div class="top-lane-section">
         <h1 class="txt-white">Sport equipment rent</h1>
         <div class="nav-container">
-            <button class="nav-button" th:text="#{cat_title}"></button>
-            <button th:if="${user != null}" class="nav-button"
+            <a class="nav-button nav-btn-clicked" th:text="#{cat_title}"></a>
+            <button class="nav-button"
+                    th:if="${user != null}"
                     th:text="#{cat_redirect_reservations}"
                     th:onclick="window.location.href='/reservations';"></button>
         </div>
@@ -29,7 +30,7 @@
         <button th:if="${user == null}" class="nav-button" th:text="#{cat_btn_sign_in}"
                 th:onclick="window.location.href='/sign_in';"></button>
         <form method="get" action="#">
-            <select name="lang" onchange="this.form.submit()">
+            <select style="margin-left: 5px;" name="lang" onchange="this.form.submit()">
                 <option value="en" th:selected="${#locale.language == 'en'}">EN</option>
                 <option value="pl" th:selected="${#locale.language == 'pl'}">PL</option>
             </select>
@@ -37,18 +38,21 @@
     </div>
 </div>
 <div class="center-body">
-    <div th:if="${user != null and user.role == 'ADMIN'}" class="category-container"
+    <div th:if="${user != null and user.role == 'ADMIN'}" class="category-container cat-new-container"
          onclick="showModal(null)">
         <div class="plus-container">
             <i class="bi bi-plus-lg plus-icon"></i>
             <h2 th:text="#{cat_btn_add}"></h2>
         </div>
     </div>
-    <div th:each="category : ${categories}" class="category-container" th:onclick="window.location.href=/*[[@{/categories/{id}(id=${category.categoryID})}]]*/">
-            <img th:src="@{/categories/image/{id}(id=${category.categoryID})}" alt="Category Image"
-                 class="cat-img"/>
-            <h2 th:text="${category.name}"></h2>
-            <label style="font-size: 18px; cursor: pointer;" class="txt-gray" th:text="#{cat_quantity} + ${category.quantity}"></label>
+    <div th:each="category : ${categories}" class="category-container"
+         th:onclick="window.location.href=/*[[@{/categories/{id}(id=${category.categoryID})}]]*/"
+         th:classappend="${category.quantity == 0} ? 'faded' : ''">
+        <img th:src="@{/categories/image/{id}(id=${category.categoryID})}" alt="Category Image"
+             class="cat-img"/>
+        <h2 th:text="${category.name}"></h2>
+        <label style="font-size: 18px; cursor: pointer;" class="txt-gray"
+               th:text="#{cat_quantity} + ${category.quantity}"></label>
         <div th:if="${user != null && user.role == 'ADMIN'}" class="filter-divider" style="margin: 20px 0px;"></div>
         <div class="cat-btn-div">
             <a th:if="${user != null and user.role == 'ADMIN'}"
@@ -57,9 +61,10 @@
                th:data-image="@{/categories/image/{id}(id=${category.categoryID})}"
                th:text="#{cat_btn_edit}"
                onclick="event.stopPropagation(); showModal(this)"
-                class="btn">
+               class="btn">
             </a>
-            <form class="deleteForm" id="deleteForm" method="post" th:action="@{/categories/delete/{id}(id=${category.categoryID})}"
+            <form class="deleteForm" id="deleteForm" method="post"
+                  th:action="@{/categories/delete/{id}(id=${category.categoryID})}"
                   th:if="${user != null and user.role == 'ADMIN'}" onclick="event.stopPropagation()">
                 <input type="hidden" name="_method" value="DELETE">
                 <button style="border: 0px;" type="submit" th:text="#{cat_btn_delete}"></button>
@@ -72,30 +77,24 @@
     <form id="categoryForm" enctype="multipart/form-data" method="POST">
         <input type="hidden" id="hiddenMethod" name="_method" value="POST">
         <div class="modal-window" onclick="event.stopPropagation();">
-
             <h2 id="modal-title" th:text="cat_btn_edit"></h2>
-
             <input type="hidden" id="categoryID" name="categoryID">
-
-            <div class="modal-image" onclick="triggerFileInput()">
-                <p th:text="#{cat_modal_img}"></p>
-                <img id="preview" style="display: none; max-width: 100%; max-height: 150px;"/>
+            <label th:text="#{cat_modal_img}"></label>
+            <div class="modal-image-div" onclick="triggerFileInput()">
+                <img id="preview" class="modal-image"/>
             </div>
-
             <input type="file" id="fileInput" name="image" accept="image/*" style="display: none;"
                    onchange="previewImage(event)">
-
-            <input type="text" id="categoryName" name="name" th:placeholder="#{cat_modal_name}">
-
+            <input class="modal-input" type="text" id="categoryName" name="name" th:placeholder="#{cat_modal_name}">
             <span id="catBtnAdd" th:text="#{cat_btn_add}" style="display: none;"></span>
             <span id="catBtnEdit" th:text="#{cat_btn_edit}" style="display: none;"></span>
-
-            <button id="saveButton" type="submit" th:text="#{cat_modal_save}"></button>
-            <button type="button" onclick="hideModal()" th:text="#{cat_modal_cancel}"></button>
+            <button class="modal-btn btn-action" id="saveButton" type="submit" th:text="#{cat_modal_save}"></button>
+            <button class="modal-btn" type="button" onclick="hideModal()" th:text="#{cat_modal_cancel}"></button>
         </div>
     </form>
 </div>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"/>
 <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <script th:src="@{/js/categories.js}"></script>
 <script th:inline="javascript">
@@ -168,6 +167,8 @@ function showToast(msg, type = "success") {
         background: type === "error" ? "var(--primary)" : "green",
     }).showToast();
 }
+
+
 </script>
 </body>
 </html>

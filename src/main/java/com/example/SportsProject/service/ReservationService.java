@@ -18,6 +18,7 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 @Service
@@ -42,6 +43,11 @@ public class ReservationService {
             reservationList = reservationRepository.findAll();
         } else {
             reservationList = reservationRepository.findAllByUser(user);
+        }
+
+        for (Reservation reservation : reservationList) {
+            reservation.setReservationDate(LocalDateTime.parse(reservation.getReservationDate())
+                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         }
 
         return reservationList;

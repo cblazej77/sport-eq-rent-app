@@ -18,14 +18,16 @@ body {
     flex-direction: column;
 }
 
+div {
+    box-sizing: border-box;
+}
+
 h1 {
     margin: 0px;
-    text-weight: bold;
     font-size: 36px;
 }
 
 h2 {
-    text-weight: normal;
     color: var(--black);
 }
 
@@ -34,15 +36,24 @@ label {
     margin: 0px;
 }
 
+input {
+    box-sizing: border-box;
+}
+
 button {
-    padding: 5px 20px;
+    padding: 7px 20px;
     border: 2px solid var(--white);
     border-radius: 15px;
     background-color: var(--primary);
-    text-color: var(--white);
+    color: var(--white);
     text-weight: bold;
     margin-right: 5px;
     cursor: pointer;
+    box-sizing: border-box;
+}
+
+img {
+    object-fit: cover;
 }
 
 .btn {
@@ -67,6 +78,10 @@ button {
 
 .body-in_center {
     justify-content: center;
+}
+
+.faded {
+    opacity: 0.5;
 }
 
 .sign-container {
@@ -152,6 +167,7 @@ button {
     height: 100px;
     margin: 0px;
     background-color: var(--primary);
+    padding: 10px 0px;
 }
 
 .top-lane-section {
@@ -179,6 +195,8 @@ button {
 
 .nav-container {
     padding: 5px 0;
+    box-sizing: border-box;
+    margin: 5px 0px;
 }
 
 .nav-button {
@@ -191,16 +209,21 @@ button {
     text-weight: bold;
     margin-right: 5px;
     cursor: pointer;
+    text-decoration: none;
 }
 
-.btn-active {
+.nav-btn-clicked {
+    background-color: var(--white);
+    color: var(--primary);
+}
 
+.btn-action {
+    background-color: var(--action);
+    color: var(--white);
 }
 
 .category-container {
     display: flex;
-    width: 330px;
-    height: 380px;
     background-color: var(--secondary);
     margin: 10px;
     flex-direction: column;
@@ -209,6 +232,11 @@ button {
     border-radius: 10px;
     cursor: pointer;
     transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    padding: 20px 40px;
+}
+
+.cat-new-container {
+    width: 320px;
 }
 
 .category-container:hover {
@@ -225,8 +253,8 @@ button {
 }
 
 .cat-img {
-    width: 280px;
-    height: 250px;
+    width: 240px;
+    height: 240px;
     border-radius: 10px;
 }
 
@@ -319,6 +347,13 @@ button {
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     text-align: center;
+    width: 500px;
+    padding: 32px;
+}
+
+.modal-btn {
+    border-radius: 5px;
+    padding: 5px 12px;
 }
 
 .plus-icon {
@@ -332,10 +367,29 @@ button {
     flex-direction: column;
 }
 
+.modal-image-div {
+    display: flex;
+    width: 100%;
+    height: 480px;
+    background-color: var(--secondary);
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 10px;
+    margin: 10px 0px;
+}
+
 .modal-image {
-    width: 500px;
-    height: 550px;
-    background-color: var(--action);
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+}
+
+.modal-input {
+    border: 1px solid var(--gray);
+    border-radius: 5px;
+    padding: 5px 12px;
+    margin-bottom: 10px;
 }
 
 .filter-body {
@@ -411,7 +465,50 @@ select {
 }
 
 .filter-btn {
-    background: var(--secondary);
+    background: var(--action);
     margin: 20px 0px;
     font-size: 14px;
+    color: var(--white);
+}
+
+.res-container {
+    display: flex;
+    flex-direction: column;
+    padding: 15px 20px;
+    box-sizing: border-box;
+    border: 1px solid var(--gray);
+    width: 760px;
+    margin: 10px 0px;
+}
+
+.res-input {
+    border-radius: 5px;
+    border: 1px solid var(--gray);
+    width: 200px;
+    padding: 5px 12px;
+    box-sizing: border-box;
+    margin-top: 5px;
+}
+
+.res-label {
+    margin: 5px 0px;
+}
+
+.res-btn-div {
+    margin-top: 20px;
+    margin-bottom: 0px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.res-search-div {
+    width: 760px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.res-select {
+    width: 200px;
 }

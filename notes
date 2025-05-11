@@ -6,12 +6,15 @@
 - email confirmation    DONE
 - reservations (RESERVED, IN_USE, RETURNED, CANCELLED)   DONE
 - bean validation with own annotations  DONE
+- all layouts DONE
+- reservation date format DONE
+- different appearance of eq with quantity 0 DONE
+- images, modals style DONE
 
-- all layouts (reservations) IN_PROGRESS
+- paging (back-end & front-end) IN_PROGRESS
 
-- different appearance of eq with quantity 0
-- paging (back-end & front-end)
 - sorting (front-end)
+- searching & sorting reservations
+- Security Config not deprecated
 - unit tests
-- images style
 - data for presentation

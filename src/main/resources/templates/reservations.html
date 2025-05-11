@@ -10,47 +10,65 @@
     <div class="top-lane-section">
         <h1 class="txt-white" th:text="#{res_title}"></h1>
         <div class="nav-container">
-            <a th:href="@{/categories}" class="btn btn-primary" th:text="#{eq_redirect_cat}"></a>
-            <button th:text="#{eq_redirect_res}"></button>
+            <a th:href="@{/categories}" class="nav-button" th:text="#{eq_redirect_cat}"></a>
+            <a class="nav-button nav-btn-clicked" th:text="#{eq_redirect_res}"></a>
         </div>
     </div>
     <div class="top-lane-account">
-        <a th:if="${user == null}" th:href="@{/sign_in}" class="btn btn-primary" th:text="#{eq_btn_sign_in}"></a>
+        <a th:if="${user == null}" th:href="@{/sign_in}" class="nav-button" th:text="#{eq_btn_sign_in}"></a>
         <div th:if="${user != null}">
-            <a th:ref="@{/logout}" th:text="#{eq_btn_logout}"></a>
+            <a class="nav-button" th:ref="@{/logout}" th:text="#{eq_btn_logout}"></a>
         </div>
     </div>
 </div>
 <div class="center-body">
     <div class="equipment-body">
-        <label th:text="'Search by reservation code'"></label>
-        <input id="searchInput" name="searchInput" type="text">
-        <div class="equipment-container" th:each="reservation : ${reservationList}">
-            <div style="display: flex; flex-direction: column;">
-                <label th:text="#{res.code(${reservation.reservationCode})}"></label>
-                <label th:text="#{res.status(${reservation.status})}"></label>
-                <label th:text="#{res.reservationDate(${reservation.reservationDate})}"></label>
-                <label th:text="#{res.pickupDate(${reservation.pickupDate})}"></label>
-                <label th:text="#{res.returnDate(${reservation.returnDate})}"></label>
-                <label th:text="#{res.quantity(${reservation.quantity})}"></label>
-                <label th:text="#{res.cost(${reservation.cost})}"></label>
-                <label th:if="${user.role == 'ADMIN'}" th:text="#{res.userFullName(${reservation.user.name}, ${reservation.user.surname})}"></label>
-                <label th:if="${user.role == 'ADMIN'}" th:text="#{res.userEmail(${reservation.user.email})}"></label>
+        <form method="get" th:action="@{/reservations}">
+        <div class="res-search-div">
+            <div>
+                <label th:text="'Search by reservation code'"></label>
+                <input class="res-input" id="searchInput" name="searchInput" type="text">
             </div>
-
+            <select class="res-select" name="sortType">
+                <option th:value="default" th:text="#{sort_title}" th:selected="${sortType == default}"></option>
+                <option th:value="dateLH" th:text="#{sort_date_LH}"
+                        th:selected="${sortType == sort_date_LH}"></option>
+                <option th:value="dateHL" th:text="#{sort_date_HL}"
+                        th:selected="${sortType == sort_date_HL}"></option>
+            </select>
+        </div>
+        </form>
+        <div class="res-container" th:each="reservation : ${reservationList}">
+            <div style="display: flex; flex-direction: column;">
+                <label style="font-weight: bold;" class="res-label"
+                       th:text="#{res.code(${reservation.reservationCode})}"></label>
+                <label class="res-label" th:text="#{res.status(${reservation.status})}"></label>
+                <label class="res-label" th:text="#{res.reservationDate(${reservation.reservationDate})}"></label>
+                <label class="res-label" th:text="#{res.pickupDate(${reservation.pickupDate})}"></label>
+                <label class="res-label" th:text="#{res.returnDate(${reservation.returnDate})}"></label>
+                <label class="res-label" th:text="#{res.quantity(${reservation.quantity})}"></label>
+                <label class="res-label" th:text="#{res.cost(${reservation.cost})}"></label>
+                <label class="res-label" th:if="${user.role == 'ADMIN'}"
+                       th:text="#{res.userFullName(${reservation.user.name}, ${reservation.user.surname})}"></label>
+                <label class="res-label" th:if="${user.role == 'ADMIN'}"
+                       th:text="#{res.userEmail(${reservation.user.email})}"></label>
+            </div>
             <form id="statusForm" enctype="multipart/form-data" method="POST" action="/reservations/change-status">
                 <input type="hidden" id="hiddenMethod" name="_method" value="PUT">
                 <input type="hidden" name="reservationID" th:value="${reservation.reservationID}">
-                <div th:if="${user.role == 'ADMIN'}">
-                    <button th:if="${reservation.status == 'RESERVED'}" th:text="#{res_btn_pickup}" name="status"
+                <div class="res-btn-div" th:if="${user.role == 'ADMIN'}">
+                    <button class="btn-action" th:if="${reservation.status == 'RESERVED'}" th:text="#{res_btn_pickup}"
+                            name="status"
                             value="IN_USE" type="submit"></button>
-                    <button th:if="${reservation.status == 'IN_USE'}" th:text="#{res_btn_return}" name="status"
+                    <button class="btn-action" th:if="${reservation.status == 'IN_USE'}" th:text="#{res_btn_return}"
+                            name="status"
                             value="RETURNED" type="submit"></button>
                     <button th:if="${reservation.status != 'CANCELLED' and reservation.status != 'RETURNED'}"
                             th:text="#{res_btn_cancel}" name="status" value="CANCELLED" type="submit"></button>
                 </div>
-                <button th:if="${reservation.status == 'RESERVED' and user.role == 'USER'}"
-                        th:text="#{res_btn_cancel}" name="status" value="CANCELLED" type="submit"></button>
+                <div class="res-btn-div" th:if="${reservation.status == 'RESERVED' and user.role == 'USER'}">
+                    <button th:text="#{res_btn_cancel}" name="status" value="CANCELLED" type="submit"></button>
+                </div>
             </form>
         </div>
     </div>

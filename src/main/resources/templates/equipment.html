@@ -16,12 +16,17 @@
         </div>
     </div>
     <div class="top-lane-account">
-        <a th:if="${user == null}" th:href="@{/sign_in}" class="btn btn-primary" th:text="#{eq_btn_sign_in}"></a>
-        <div th:if="${user != null}">
-            <a th:ref="@{/logout}" th:text="#{eq_btn_logout}"></a>
+        <a th:if="${user == null}" th:href="@{/sign_in}" class="nav-button" th:text="#{eq_btn_sign_in}"></a>
+        <div th:if="${user != null}" style="display: flex; flex-direction: column;">
+            <div style="margin-bottom: 10px;">
+                <label class="txt-white" th:text="#{nav.logged(${user.email})}"></label>
+                <label class="txt-white" th:if="${user.role == 'ADMIN'}" th:text="[ADMIN]"></label>
+            </div>
+            <button class="nav-button" th:text="#{cat_btn_logout}"
+                    th:onclick="window.location.href='/logout';"></button>
         </div>
         <form method="get" action="#">
-            <select name="lang" onchange="this.form.submit()">
+            <select style="margin-left: 5px;" name="lang" onchange="this.form.submit()">
                 <option value="en" th:selected="${#locale.language == 'en'}">EN</option>
                 <option value="pl" th:selected="${#locale.language == 'pl'}">PL</option>
             </select>
@@ -72,7 +77,8 @@
             <h2 style="margin: 0px 20px;" th:text="#{eq_btn_add}"></h2>
         </div>
 
-        <div th:each="equipment : ${equipmentList}" class="eq-container">
+        <div th:each="equipment : ${equipmentList}" class="eq-container"
+             th:classappend="${equipment.quantity == 0} ? 'faded' : ''">
             <img th:src="@{/equipment/image/{id}(id=${equipment.equipmentID})}"
                  class="eq-img">
             <div style="width: 100%; display: flex; flex-direction: column;">
@@ -94,12 +100,13 @@
                        class="eq-btn"
                        onclick="showModal(this)">
                     </a>
-                    <form class="deleteForm" id="deleteForm" method="post" th:action="@{/equipment_delete/{id}(id=${equipment.equipmentID})}"
+                    <form class="deleteForm" id="deleteForm" method="post"
+                          th:action="@{/equipment_delete/{id}(id=${equipment.equipmentID})}"
                           th:if="${user != null and user.role == 'ADMIN'}">
                         <input type="hidden" name="_method" value="DELETE">
-                            <button type="submit" th:text="#{eq_btn_delete}"></button>
+                        <button type="submit" th:text="#{eq_btn_delete}"></button>
                     </form>
-                    <a th:if="${user != null and user.role == 'USER'}"
+                    <a th:if="${equipment.quantity != 0 and user != null and user.role == 'USER'}"
                        th:text="#{eq_btn_reserve}"
                        th:data-id="${equipment.equipmentID}"
                        th:data-email="${user.email}"
@@ -121,23 +128,23 @@
         <input type="hidden" id="hiddenMethod" name="_method" value="POST">
         <div class="modal-window" onclick="event.stopPropagation();">
             <h2 id="modal-title" th:text="#{eq_btn_edit}"></h2>
-
-            <div class="modal-image" onclick="triggerFileInput()">
-                <p th:text="#{eq_modal_img}"></p>
-                <img id="preview" style="display: none; max-width: 100%; max-height: 150px;"/>
+            <label th:text="#{cat_modal_img}"></label>
+            <div class="modal-image-div" onclick="triggerFileInput()">
+                <img id="preview" class="modal-image"/>
             </div>
-
             <input type="file" id="fileInput" name="image" accept="image/*" style="display: none;"
                    onchange="previewImage(event)">
-            <input type="text" id="equipmentName" name="name" th:placeholder="#{eq_modal_name}">
-            <input type="text" id="equipmentDescription" name="description" th:placeholder="#{eq_modal_desc}">
-            <input type="number" id="equipmentPrice" name="price" th:placeholder="#{eq_modal_price}">
-            <input type="number" id="equipmentQuantity" name="quantity" th:placeholder="#{eq_modal_quantity}">
+            <input class="modal-input" type="text" id="equipmentName" name="name" th:placeholder="#{eq_modal_name}">
+            <input class="modal-input" type="text" id="equipmentDescription" name="description"
+                   th:placeholder="#{eq_modal_desc}">
+            <input class="modal-input" type="number" id="equipmentPrice" name="price"
+                   th:placeholder="#{eq_modal_price}">
+            <input class="modal-input" type="number" id="equipmentQuantity" name="quantity"
+                   th:placeholder="#{eq_modal_quantity}">
             <input type="hidden" id="categoryID" name="categoryID" th:value="${categoryID}">
             <input type="hidden" id="equipmentID" name="equipmentID">
-
-            <button id="addButton" type="submit" th:text="#{eq_modal_save}"></button>
-            <button type="button" onclick="hideModal()" th:text="#{eq_modal_cancel}"></button>
+            <button class="modal-btn btn-action" id="addButton" type="submit" th:text="#{eq_modal_save}"></button>
+            <button class="modal-btn" type="button" onclick="hideModal()" th:text="#{eq_modal_cancel}"></button>
         </div>
     </form>
 </div>
@@ -148,22 +155,21 @@
         <div class="modal-window" onclick="event.stopPropagation();">
             <input id="emailInput" style="display: none;" name="email">
             <input id="idInput" style="display: none;" name="equipmentID">
-
             <h2 th:text="#{reservation_modal_title}"></h2>
             <label th:text="#{res_modal_quantity}"></label>
-            <input type="number" name="quantity">
+            <input class="modal-input" type="number" name="quantity">
             <label th:text="#{reservation_modal_date_pickup}"></label>
-            <input type="date" name="pickupDate" th:min="${minPickupDate}" th:max="${maxPickupDate}"
+            <input class="modal-input" type="date" name="pickupDate" th:min="${minPickupDate}" th:max="${maxPickupDate}"
                    onchange="showReturnDate(this.value)">
             <label id="lab"></label>
             <label id="returnDateLabel" th:text="#{reservation_modal_date_return}" style="display: none;"></label>
-            <input id="returnDateInput" type="date" name="returnDate" th:max="${maxReturnDate}" style="display: none;">
-            <button type="submit" th:text="#{reservation_modal_title}"></button>
+            <input class="modal-input" id="returnDateInput" type="date" name="returnDate" th:max="${maxReturnDate}" style="display: none;">
+            <button class="modal-btn btn-action" type="submit" th:text="#{reservation_modal_title}"></button>
         </div>
     </form>
 </div>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"/>
 <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
 <script th:src="@{/js/equipment.js}"></script>
@@ -269,6 +275,7 @@ function showToast(msg, type = "success") {
         background: type === "error" ? "var(--primary)" : "green",
     }).showToast();
 }
+
 </script>
 </body>
 </html>
