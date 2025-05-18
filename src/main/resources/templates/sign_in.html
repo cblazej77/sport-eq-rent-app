@@ -6,7 +6,7 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body class="body-in_center">
-<form class="sign-container" th:action="@{sign_in_action}" method="post" th:object="${userLoginDTO}">
+<form class="sign-container" th:action="@{/sign_in_action}" method="post" th:object="${userLoginDTO}">
     <h2 class="sign-title" th:text="#{sign_in_title}"></h2>
     <div class="sign-column-div">
         <label class="sign-label" th:text="#{sign_in_input_username}"></label>
@@ -52,8 +52,6 @@
             }).showToast();
         }
     }
-
-
 </script>
 </body>
 </html>

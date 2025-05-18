@@ -32,12 +32,6 @@ public class EquipmentController {
         this.categoryRepository = categoryRepository;
     }
 
-//    @PostMapping("/equipment_add")
-//    public String equipmentAdd(@Valid EquipmentAddDTO equipmentAddDTO, BindingResult bindingResult) throws IOException {
-//        equipmentService.equipmentAdd(equipmentAddDTO);
-//        return "redirect:/categories/" + equipmentAddDTO.getCategoryID();
-//    }
-
     @PostMapping("/equipment_add")
     public ResponseEntity<?> equipmentAdd(
             @ModelAttribute @Valid EquipmentAddDTO equipmentAddDTO,

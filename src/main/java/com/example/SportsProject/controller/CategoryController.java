@@ -2,6 +2,8 @@ package com.example.SportsProject.controller;
 
 import com.example.SportsProject.dto.CategoryAddDTO;
 import com.example.SportsProject.dto.CategoryEditDTO;
+import com.example.SportsProject.dto.EquipmentDTO;
+import com.example.SportsProject.dto.UserDTO;
 import com.example.SportsProject.entity.Category;
 import com.example.SportsProject.entity.Equipment;
 import com.example.SportsProject.entity.User;
@@ -9,6 +11,8 @@ import com.example.SportsProject.repository.CategoryRepository;
 import com.example.SportsProject.repository.UserRepository;
 import com.example.SportsProject.service.CategoryService;
 import com.example.SportsProject.service.EquipmentService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -109,13 +113,16 @@ public class CategoryController {
             @RequestParam(required = false) Float filterPriceMin,
             @RequestParam(required = false) Float filterPriceMax,
             @RequestParam(required = false) Boolean filterAvailable,
-            Model model) {
+            Model model) throws JsonProcessingException {
         if (sortType == null) {sortType = "default";}
-        System.out.println("searchName: " + filterName);
         Category category = categoryService.getCategoryById(categoryID);
-        System.out.println(filterAvailable);
-        List<Equipment> equipment = equipmentService.getEquipmentByCategoryWithFilters(categoryID, sortType, filterName, filterPriceMin, filterPriceMax, filterAvailable);
+        List<Equipment> equipmentList = equipmentService.getEquipmentByCategoryWithFilters(categoryID, sortType, filterName, filterPriceMin, filterPriceMax, filterAvailable);
 
+        List<EquipmentDTO> equipmentDTOS = equipmentList.stream()
+                .map(e -> new EquipmentDTO(e.getEquipmentID(), e.getName(), e.getDescription(), e.getPrice(), e.getImage(), e.getQuantity()))
+                .collect(Collectors.toList());
+
+        model.addAttribute("equipmentList", equipmentDTOS);
         model.addAttribute("sortType", sortType);
         model.addAttribute("filterName", Objects.requireNonNullElse(filterName, ""));
         model.addAttribute("filterPriceMin", Objects.requireNonNullElse(filterPriceMin, ""));
@@ -123,7 +130,6 @@ public class CategoryController {
         model.addAttribute("filterAvailable", filterAvailable);
         model.addAttribute("categoryID", categoryID);
         model.addAttribute("categoryName", category.getName());
-        model.addAttribute("equipmentList", equipment);
         model.addAttribute("minPickupDate", LocalDate.now().toString());
         model.addAttribute("maxPickupDate", LocalDate.now().plusWeeks(2).toString());
         model.addAttribute("maxReturnDate", LocalDate.now().plusMonths(2).toString());
@@ -131,7 +137,13 @@ public class CategoryController {
         if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof UserDetails) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             User user = userRepository.findUserByEmail(userDetails.getUsername());
-            model.addAttribute("user", user);
+
+            UserDTO userDTO = new UserDTO();
+            userDTO.setUserID(user.getUserID());
+            userDTO.setEmail(user.getEmail());
+            userDTO.setRole(user.getRole());
+
+            model.addAttribute("user", userDTO);
         }
 
         return "equipment";

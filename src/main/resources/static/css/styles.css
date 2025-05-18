@@ -322,6 +322,24 @@ img {
     margin: 0px;
 }
 
+.pagination-controls {
+    margin-top: 10px;
+}
+
+.pagination-controls button {
+    margin: 0 2px;
+    padding: 6px 10px;
+    border-radius: 4px;
+    background-color: var(--gray);
+    border: none;
+    cursor: pointer;
+}
+
+.pagination-controls button:disabled {
+    background-color: #ccc;
+    cursor: default;
+}
+
 .modal-overlay {
     display: none;
     position: fixed;

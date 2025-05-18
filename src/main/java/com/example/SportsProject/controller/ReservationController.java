@@ -1,6 +1,8 @@
 package com.example.SportsProject.controller;
 
 import com.example.SportsProject.dto.ReservationAddDTO;
+import com.example.SportsProject.dto.ReservationDTO;
+import com.example.SportsProject.dto.UserDTO;
 import com.example.SportsProject.entity.Reservation;
 import com.example.SportsProject.entity.User;
 import com.example.SportsProject.repository.UserRepository;
@@ -17,6 +19,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,17 +37,49 @@ public class ReservationController {
     }
 
     @GetMapping
-    public String showReservations(Model model) {
-
+    public String showReservations(Model model, @RequestParam(required = false) String filterText) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof UserDetails) {
+        if (authentication != null && authentication.isAuthenticated()
+                && authentication.getPrincipal() instanceof UserDetails) {
+
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             User user = userRepository.findUserByEmail(userDetails.getUsername());
-            List<Reservation> reservationList = reservationService.getReservationList(user);
-            model.addAttribute("user", user);
-            model.addAttribute("reservationList", reservationList);
+            List<Reservation> reservationList = reservationService.getReservationList(user, filterText);
+
+            List<ReservationDTO> reservationDTOs = reservationList.stream().map(res -> {
+                ReservationDTO dto = new ReservationDTO();
+                dto.setReservationID(res.getReservationID());
+                dto.setReservationCode(res.getReservationCode());
+                dto.setReservationDate(res.getReservationDate());
+                dto.setPickupDate(res.getPickupDate());
+                dto.setReturnDate(res.getReturnDate());
+                dto.setStatus(res.getStatus());
+                dto.setQuantity(res.getQuantity());
+                dto.setCost(res.getCost());
+
+                User u = res.getUser();
+                UserDTO userDTO = new UserDTO();
+                userDTO.setName(u.getName());
+                userDTO.setSurname(u.getSurname());
+                userDTO.setEmail(u.getEmail());
+                userDTO.setRole(u.getRole());
+
+                dto.setUser(userDTO);
+                return dto;
+            }).collect(Collectors.toList());
+
+            Collections.reverse(reservationDTOs);
+
+            UserDTO userDTO = new UserDTO();
+            userDTO.setName(user.getName());
+            userDTO.setSurname(user.getSurname());
+            userDTO.setEmail(user.getEmail());
+            userDTO.setRole(user.getRole());
+
+            model.addAttribute("user", userDTO);
+            model.addAttribute("reservationList", reservationDTOs);
             model.addAttribute("today", LocalDate.now());
-            System.out.println(LocalDate.now());
+            model.addAttribute("filterText", filterText);
         }
         return "reservations";
     }

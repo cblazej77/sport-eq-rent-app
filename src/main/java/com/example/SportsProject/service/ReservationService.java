@@ -7,6 +7,7 @@ import com.example.SportsProject.entity.User;
 import com.example.SportsProject.repository.EquipmentRepository;
 import com.example.SportsProject.repository.ReservationRepository;
 import com.example.SportsProject.repository.UserRepository;
+import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -36,13 +37,25 @@ public class ReservationService {
         this.equipmentRepository = equipmentRepository;
     }
 
-    public List<Reservation> getReservationList(User user) {
+    public List<Reservation> getReservationList(User user, String filterText) {
         List<Reservation> reservationList;
 
         if (Objects.equals(user.getRole(), "ADMIN")) {
             reservationList = reservationRepository.findAll();
         } else {
             reservationList = reservationRepository.findAllByUser(user);
+        }
+
+        if (filterText != null) {
+            LevenshteinDistance levenshteinDistance = new LevenshteinDistance();
+            reservationList = reservationList.stream()
+                    .filter(e -> {
+                        String name = e.getReservationCode().toLowerCase().replaceAll("\\s+", "");
+                        String term = filterText.toLowerCase().replaceAll("\\s+", "");
+                        int distance = levenshteinDistance.apply(name, term);
+                        return distance <= 2 || name.contains(term);
+                    })
+                    .toList();
         }
 
         for (Reservation reservation : reservationList) {

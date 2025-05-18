@@ -10,11 +10,14 @@
 - reservation date format DONE
 - different appearance of eq with quantity 0 DONE
 - images, modals style DONE
+- paging (front-end) DONE
+- sorting reservations (front-end)  DONE
+- reservation multi-lang    DONE
+- no reservations box   DONE
+- Security Config not deprecated    DONE
+- Security Config - endpoint permissions    DONE
+- controllers tests (@WebMvcTest)  DONE
 
-- paging (back-end & front-end) IN_PROGRESS
+- unit tests for services (category, customUserDetails, EmailVerification, Equipment, Reservation, User)   IN_PROGRESS
 
-- sorting (front-end)
-- searching & sorting reservations
-- Security Config not deprecated
-- unit tests
 - data for presentation

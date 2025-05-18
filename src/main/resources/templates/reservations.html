@@ -17,61 +17,133 @@
     <div class="top-lane-account">
         <a th:if="${user == null}" th:href="@{/sign_in}" class="nav-button" th:text="#{eq_btn_sign_in}"></a>
         <div th:if="${user != null}">
-            <a class="nav-button" th:ref="@{/logout}" th:text="#{eq_btn_logout}"></a>
+            <a class="nav-button" th:href="@{/logout}" th:text="#{eq_btn_logout}"></a>
         </div>
     </div>
 </div>
 <div class="center-body">
     <div class="equipment-body">
-        <form method="get" th:action="@{/reservations}">
-        <div class="res-search-div">
-            <div>
-                <label th:text="'Search by reservation code'"></label>
-                <input class="res-input" id="searchInput" name="searchInput" type="text">
+        <form id="sortForm" onsubmit="event.preventDefault(); sortAndRender();">
+            <div class="res-search-div">
+                <!--                <div>-->
+                <!--                    <label th:text="#{res.search}"></label>-->
+                <!--                    <input class="res-input" id="searchInput" name="filterText" type="text" th:value="${filterText}">-->
+                <!--                </div>-->
+                <div>
+                    <label th:text="#{res.sort}"></label>
+                    <select class="res-select" id="sortSelect">
+                        <option th:value="dateLH" th:text="#{sort_date_LH}"></option>
+                        <option th:value="dateHL" th:text="#{sort_date_HL}"
+                                th:selected=true></option>
+                    </select>
+                </div>
+                <button class="btn-action" th:text="#{filters_btn}" type="submit" id="filterBtn"></button>
             </div>
-            <select class="res-select" name="sortType">
-                <option th:value="default" th:text="#{sort_title}" th:selected="${sortType == default}"></option>
-                <option th:value="dateLH" th:text="#{sort_date_LH}"
-                        th:selected="${sortType == sort_date_LH}"></option>
-                <option th:value="dateHL" th:text="#{sort_date_HL}"
-                        th:selected="${sortType == sort_date_HL}"></option>
-            </select>
-        </div>
         </form>
-        <div class="res-container" th:each="reservation : ${reservationList}">
-            <div style="display: flex; flex-direction: column;">
-                <label style="font-weight: bold;" class="res-label"
-                       th:text="#{res.code(${reservation.reservationCode})}"></label>
-                <label class="res-label" th:text="#{res.status(${reservation.status})}"></label>
-                <label class="res-label" th:text="#{res.reservationDate(${reservation.reservationDate})}"></label>
-                <label class="res-label" th:text="#{res.pickupDate(${reservation.pickupDate})}"></label>
-                <label class="res-label" th:text="#{res.returnDate(${reservation.returnDate})}"></label>
-                <label class="res-label" th:text="#{res.quantity(${reservation.quantity})}"></label>
-                <label class="res-label" th:text="#{res.cost(${reservation.cost})}"></label>
-                <label class="res-label" th:if="${user.role == 'ADMIN'}"
-                       th:text="#{res.userFullName(${reservation.user.name}, ${reservation.user.surname})}"></label>
-                <label class="res-label" th:if="${user.role == 'ADMIN'}"
-                       th:text="#{res.userEmail(${reservation.user.email})}"></label>
-            </div>
-            <form id="statusForm" enctype="multipart/form-data" method="POST" action="/reservations/change-status">
-                <input type="hidden" id="hiddenMethod" name="_method" value="PUT">
-                <input type="hidden" name="reservationID" th:value="${reservation.reservationID}">
-                <div class="res-btn-div" th:if="${user.role == 'ADMIN'}">
-                    <button class="btn-action" th:if="${reservation.status == 'RESERVED'}" th:text="#{res_btn_pickup}"
-                            name="status"
-                            value="IN_USE" type="submit"></button>
-                    <button class="btn-action" th:if="${reservation.status == 'IN_USE'}" th:text="#{res_btn_return}"
-                            name="status"
-                            value="RETURNED" type="submit"></button>
-                    <button th:if="${reservation.status != 'CANCELLED' and reservation.status != 'RETURNED'}"
-                            th:text="#{res_btn_cancel}" name="status" value="CANCELLED" type="submit"></button>
-                </div>
-                <div class="res-btn-div" th:if="${reservation.status == 'RESERVED' and user.role == 'USER'}">
-                    <button th:text="#{res_btn_cancel}" name="status" value="CANCELLED" type="submit"></button>
-                </div>
-            </form>
+        <h2 class="res-container" style="align-items: center; padding: 80px 0px;" th:if="${reservationList == null}">
+            <label th:text="#{res.blank}"></label>
+        </h2>
+        <div id="reservationsContainer">
         </div>
+        <!--        <div class="res-container" th:each="reservation : ${reservationList}">-->
+        <!--            <div style="display: flex; flex-direction: column;">-->
+        <!--                <label style="font-weight: bold;" class="res-label"-->
+        <!--                       th:text="#{res.code(${reservation.reservationCode})}"></label>-->
+        <!--                <label class="res-label" th:text="#{res.status(${reservation.status})}"></label>-->
+        <!--                <label class="res-label" th:text="#{res.reservationDate(${reservation.reservationDate})}"></label>-->
+        <!--                <label class="res-label" th:text="#{res.pickupDate(${reservation.pickupDate})}"></label>-->
+        <!--                <label class="res-label" th:text="#{res.returnDate(${reservation.returnDate})}"></label>-->
+        <!--                <label class="res-label" th:text="#{res.quantity(${reservation.quantity})}"></label>-->
+        <!--                <label class="res-label" th:text="#{res.cost(${reservation.cost})}"></label>-->
+        <!--                <label class="res-label" th:if="${user.role == 'ADMIN'}"-->
+        <!--                       th:text="#{res.userFullName(${reservation.user.name}, ${reservation.user.surname})}"></label>-->
+        <!--                <label class="res-label" th:if="${user.role == 'ADMIN'}"-->
+        <!--                       th:text="#{res.userEmail(${reservation.user.email})}"></label>-->
+        <!--            </div>-->
+        <!--            <form id="statusForm" enctype="multipart/form-data" method="POST" action="/reservations/change-status">-->
+        <!--                <input type="hidden" id="hiddenMethod" name="_method" value="PUT">-->
+        <!--                <input type="hidden" name="reservationID" th:value="${reservation.reservationID}">-->
+        <!--                <div class="res-btn-div" th:if="${user.role == 'ADMIN'}">-->
+        <!--                    <button class="btn-action" th:if="${reservation.status == 'RESERVED'}" th:text="#{res_btn_pickup}"-->
+        <!--                            name="status"-->
+        <!--                            value="IN_USE" type="submit"></button>-->
+        <!--                    <button class="btn-action" th:if="${reservation.status == 'IN_USE'}" th:text="#{res_btn_return}"-->
+        <!--                            name="status"-->
+        <!--                            value="RETURNED" type="submit"></button>-->
+        <!--                    <button th:if="${reservation.status != 'CANCELLED' and reservation.status != 'RETURNED'}"-->
+        <!--                            th:text="#{res_btn_cancel}" name="status" value="CANCELLED" type="submit"></button>-->
+        <!--                </div>-->
+        <!--                <div class="res-btn-div" th:if="${reservation.status == 'RESERVED' and user.role == 'USER'}">-->
+        <!--                    <button th:text="#{res_btn_cancel}" name="status" value="CANCELLED" type="submit"></button>-->
+        <!--                </div>-->
+        <!--            </form>-->
+        <!--        </div>-->
     </div>
 </div>
+<script th:inline="javascript">
+    let reservationList = /*[[${reservationList}]]*/ [];
+    const user = /*[[${user}]]*/ null;
+
+    const mLangText = {
+        code: /*[[#{res.code}]]*/,
+        status: /*[[#{res.status}]]*/,
+        reservationDate: /*[[#{res.reservationDate}]]*/,
+        pickupDate: /*[[#{res.pickupDate}]]*/,
+        returnDate: /*[[#{res.returnDate}]]*/,
+        quantity: /*[[#{res.quantity}]]*/,
+        cost: /*[[#{res.cost}]]*/,
+        userFullName: /*[[#{res.userFullName}]]*/,
+        userEmail: /*[[#{res.userEmail}]]*/
+    };
+
+    function parseDate(dateStr) {
+        return new Date(dateStr.replace(" ", "T"));
+    }
+
+    function sortAndRender() {
+        const sortType = document.getElementById("sortSelect").value;
+
+        let sortedList = [...reservationList];
+
+        if (sortType === "dateLH") {
+            sortedList.sort((a, b) => parseDate(a.reservationDate) - parseDate(b.reservationDate));
+        } else if (sortType === "dateHL") {
+            sortedList.sort((a, b) => parseDate(b.reservationDate) - parseDate(a.reservationDate));
+        }
+
+        renderReservations(sortedList);
+    }
+
+    function renderReservations(list) {
+        const container = document.getElementById("reservationsContainer");
+        container.innerHTML = "";
+
+        list.forEach(reservation => {
+            const html = `
+            <div class="res-container">
+                <div style="display: flex; flex-direction: column;">
+                    <label style="font-weight: bold;" class="res-label">${mLangText.code} ${reservation.reservationCode}</label>
+                    <label class="res-label">${mLangText.status} ${reservation.status}</label>
+                    <label class="res-label">${mLangText.reservationDate} ${reservation.reservationDate}</label>
+                    <label class="res-label">${mLangText.pickupDate} ${reservation.pickupDate}</label>
+                    <label class="res-label">${mLangText.returnDate} ${reservation.returnDate}</label>
+                    <label class="res-label">${mLangText.quantity} ${reservation.quantity}</label>
+                    <label class="res-label">${mLangText.cost} ${reservation.cost}</label>
+                    ${user && user.role === 'ADMIN' ? `
+                        <label class="res-label">${mLangText.userFullName} ${reservation.user.name} ${reservation.user.surname}</label>
+                        <label class="res-label">${mLangText.userEmail} ${reservation.user.email}</label>` : ''}
+                </div>
+            </div>
+            `;
+            container.innerHTML += html;
+        });
+    }
+
+    // Render on load
+    document.addEventListener("DOMContentLoaded", () => {
+        renderReservations(reservationList);
+    });
+
+</script>
 </body>
 </html>

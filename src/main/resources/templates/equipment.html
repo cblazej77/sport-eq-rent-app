@@ -71,53 +71,64 @@
         </div>
     </form>
     <div class="equipment-body">
+        <div style="margin: 1em 0;">
+            <label>Items per page:</label>
+            <select id="pageSizeSelect">
+                <option value="4" selected>4</option>
+                <option value="8">8</option>
+                <option value="12">12</option>
+            </select>
+        </div>
+        <div id="paginationControls" class="pagination-controls"></div>
         <div th:if="${user != null and user.role == 'ADMIN'}" class="eq-container"
              onclick="showModal(null)" style="align-items: center; cursor: pointer;">
             <h1 style="margin: 0px;" class="txt-gray">+</h1>
             <h2 style="margin: 0px 20px;" th:text="#{eq_btn_add}"></h2>
         </div>
 
-        <div th:each="equipment : ${equipmentList}" class="eq-container"
-             th:classappend="${equipment.quantity == 0} ? 'faded' : ''">
-            <img th:src="@{/equipment/image/{id}(id=${equipment.equipmentID})}"
-                 class="eq-img">
-            <div style="width: 100%; display: flex; flex-direction: column;">
-                <label class="eq-quantity"
-                       style="align-self: flex-end;"
-                       th:text="#{eq_modal_quantity} + ': ' + ${equipment.quantity}">
-                </label>
-                <h2 th:text="${equipment.name}"></h2>
-                <label th:text="${equipment.description}"></label>
-                <div class="eq-bottom-container">
-                    <a th:if="${user != null and user.role == 'ADMIN'}"
-                       th:text="#{eq_btn_edit}"
-                       th:data-id="${equipment.equipmentID}"
-                       th:data-name="${equipment.name}"
-                       th:data-description="${equipment.description}"
-                       th:data-price="${equipment.price}"
-                       th:data-quantity="${equipment.quantity}"
-                       th:data-image="@{/equipment/image/{id}(id=${equipment.equipmentID})}"
-                       class="eq-btn"
-                       onclick="showModal(this)">
-                    </a>
-                    <form class="deleteForm" id="deleteForm" method="post"
-                          th:action="@{/equipment_delete/{id}(id=${equipment.equipmentID})}"
-                          th:if="${user != null and user.role == 'ADMIN'}">
-                        <input type="hidden" name="_method" value="DELETE">
-                        <button type="submit" th:text="#{eq_btn_delete}"></button>
-                    </form>
-                    <a th:if="${equipment.quantity != 0 and user != null and user.role == 'USER'}"
-                       th:text="#{eq_btn_reserve}"
-                       th:data-id="${equipment.equipmentID}"
-                       th:data-email="${user.email}"
-                       class="eq-btn"
-                       onclick="showReservationModal(this)">
-                    </a>
-                    <div th:if="${user == null}" class="ghost-div"></div>
-                    <h2 class="eq-price" th:text="#{eq.price(${equipment.price})}"></h2>
-                </div>
-            </div>
-        </div>
+        <div id="equipmentContainer"></div>
+
+        <!--        <div th:each="equipment : ${equipmentList}" class="eq-container"-->
+<!--             th:classappend="${equipment.quantity == 0} ? 'faded' : ''">-->
+<!--            <img th:src="@{/equipment/image/{id}(id=${equipment.equipmentID})}"-->
+<!--                 class="eq-img">-->
+<!--            <div style="width: 100%; display: flex; flex-direction: column;">-->
+<!--                <label class="eq-quantity"-->
+<!--                       style="align-self: flex-end;"-->
+<!--                       th:text="#{eq_modal_quantity} + ': ' + ${equipment.quantity}">-->
+<!--                </label>-->
+<!--                <h2 th:text="${equipment.name}"></h2>-->
+<!--                <label th:text="${equipment.description}"></label>-->
+<!--                <div class="eq-bottom-container">-->
+<!--                    <a th:if="${user != null and user.role == 'ADMIN'}"-->
+<!--                       th:text="#{eq_btn_edit}"-->
+<!--                       th:data-id="${equipment.equipmentID}"-->
+<!--                       th:data-name="${equipment.name}"-->
+<!--                       th:data-description="${equipment.description}"-->
+<!--                       th:data-price="${equipment.price}"-->
+<!--                       th:data-quantity="${equipment.quantity}"-->
+<!--                       th:data-image="@{/equipment/image/{id}(id=${equipment.equipmentID})}"-->
+<!--                       class="eq-btn"-->
+<!--                       onclick="showModal(this)">-->
+<!--                    </a>-->
+<!--                    <form class="deleteForm" id="deleteForm" method="post"-->
+<!--                          th:action="@{/equipment_delete/{id}(id=${equipment.equipmentID})}"-->
+<!--                          th:if="${user != null and user.role == 'ADMIN'}">-->
+<!--                        <input type="hidden" name="_method" value="DELETE">-->
+<!--                        <button type="submit" th:text="#{eq_btn_delete}"></button>-->
+<!--                    </form>-->
+<!--                    <a th:if="${equipment.quantity != 0 and user != null and user.role == 'USER'}"-->
+<!--                       th:text="#{eq_btn_reserve}"-->
+<!--                       th:data-id="${equipment.equipmentID}"-->
+<!--                       th:data-email="${user.email}"-->
+<!--                       class="eq-btn"-->
+<!--                       onclick="showReservationModal(this)">-->
+<!--                    </a>-->
+<!--                    <div th:if="${user == null}" class="ghost-div"></div>-->
+<!--                    <h2 class="eq-price" th:text="#{eq.price(${equipment.price})}"></h2>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
     </div>
 </div>
 
@@ -171,8 +182,91 @@
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"/>
 <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-
 <script th:src="@{/js/equipment.js}"></script>
+
+<script th:inline="javascript">
+    let equipmentList = /*[[${equipmentList}]]*/ [];
+    const user = /*[[${user} != null ? ${user} : '{}']]*/ null;
+    console.log(user);
+    const isAdmin = user && user.role === 'ADMIN';
+    let currentPage = 0;
+    let pageSize = parseInt(document.getElementById("pageSizeSelect").value);
+
+    document.getElementById("pageSizeSelect").addEventListener("change", () => {
+        pageSize = parseInt(document.getElementById("pageSizeSelect").value);
+        currentPage = 0;
+        renderPage();
+    });
+
+    function renderPage() {
+        const start = currentPage * pageSize;
+        const end = start + pageSize;
+        const pageItems = equipmentList.slice(start, end);
+
+        const container = document.getElementById("equipmentContainer");
+        container.innerHTML = pageItems.map(eq => `
+            <div class="eq-container ${eq.quantity === 0 ? 'faded' : ''}">
+                <img src="/equipment/image/${eq.equipmentID}" class="eq-img">
+                <div style="width: 100%; display: flex; flex-direction: column;">
+                    <label class="eq-quantity" style="align-self: flex-end;">
+                        Ilość: ${eq.quantity}
+                    </label>
+                    <h2>${eq.name}</h2>
+                    <label>${eq.description}</label>
+                    <div class="eq-bottom-container">
+                        ${user && user.role === 'ADMIN' ? `
+                            <a class="eq-btn"
+                               data-id="${eq.equipmentID}"
+                               data-name="${eq.name}"
+                               data-description="${eq.description}"
+                               data-price="${eq.price}"
+                               data-quantity="${eq.quantity}"
+                               data-image="/equipment/image/${eq.equipmentID}"
+                               onclick="showModal(this)">
+                                Edytuj
+                            </a>
+                            <form class="deleteForm" method="post" action="/equipment_delete/${eq.equipmentID}">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit">Usuń</button>
+                            </form>
+                        ` : ""}
+                        ${user && user.role === 'USER' && eq.quantity > 0 ? `
+                            <a class="eq-btn"
+                               data-id="${eq.equipmentID}"
+                               data-email="${user.email}"
+                               onclick="showReservationModal(this)">
+                                Zarezerwuj
+                            </a>
+                        ` : ""}
+                        ${!user ? `<div class="ghost-div"></div>` : ""}
+                        <h2 class="eq-price">${eq.price} zł</h2>
+                    </div>
+                </div>
+            </div>
+        `).join("");
+
+        renderPaginationControls();
+    }
+
+    function renderPaginationControls() {
+        const totalPages = Math.ceil(equipmentList.length / pageSize);
+        const controls = document.getElementById("paginationControls");
+        controls.innerHTML = "";
+
+        for (let i = 0; i < totalPages; i++) {
+            const btn = document.createElement("button");
+            btn.textContent = i + 1;
+            btn.disabled = i === currentPage;
+            btn.onclick = () => {
+                currentPage = i;
+                renderPage();
+            };
+            controls.appendChild(btn);
+        }
+    }
+
+    renderPage();
+</script>
 <script th:inline="javascript">
 document.querySelectorAll(".deleteForm").forEach(form => {
     form.addEventListener("submit", function (e) {
