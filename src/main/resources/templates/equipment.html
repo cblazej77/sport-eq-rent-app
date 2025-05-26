@@ -27,8 +27,10 @@
         </div>
         <form method="get" action="#">
             <select style="margin-left: 5px;" name="lang" onchange="this.form.submit()">
-                <option value="en" th:selected="${#locale.language == 'en'}">EN</option>
                 <option value="pl" th:selected="${#locale.language == 'pl'}">PL</option>
+                <option value="en" th:selected="${#locale.language == 'en'}">EN</option>
+                <option value="es" th:selected="${#locale.language == 'es'}">ES</option>
+                <option value="fr" th:selected="${#locale.language == 'fr'}">FR</option>
             </select>
         </form>
     </div>

@@ -42,7 +42,4 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<EmailVerification> emailVerificationList;
-
-    @OneToMany(mappedBy = "user")
-    private List<Review> reviewList;
 }

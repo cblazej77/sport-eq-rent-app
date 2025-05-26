@@ -31,33 +31,6 @@ public class UserService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-//    public String signIn(UserLoginDTO userLoginDTO) {
-//        User userCheck = userRepository.findUserByEmail(userLoginDTO.getEmail());
-//
-//        if (userCheck != null && passwordEncoder.matches(userLoginDTO.getPassword(), userCheck.getPassword())) {
-//            if (userCheck.getVerified()) {
-//                UserDetails userDetails = org.springframework.security.core.userdetails.User
-//                        .withUsername(userCheck.getEmail())
-//                        .password(userCheck.getPassword())
-//                        .roles(userCheck.getRole())
-//                        .build();
-//
-//                UsernamePasswordAuthenticationToken authenticationToken =
-//                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-//
-//                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-//                return "OK";
-//            } else if (userLoginDTO.getSendEmail() != null && userLoginDTO.getSendEmail()) {
-//                emailVerificationService.sendVerificationToken(userCheck);
-//                return "SEND_TOKEN";
-//            } else {
-//                return "NOT_VERIFIED";
-//            }
-//        } else {
-//            return "INCORRECT_INPUT";
-//        }
-//    }
-
     public String signIn(UserLoginDTO userLoginDTO, AuthenticationManager authenticationManager) {
         User userCheck = userRepository.findUserByEmail(userLoginDTO.getEmail());
 
@@ -93,22 +66,24 @@ public class UserService {
         }
     }
 
-    public Boolean signUp(UserRegisterDTO userRegisterDTO) {
-        User userCheck = userRepository.findUserByEmail(userRegisterDTO.getEmail());
-
-        if (userCheck == null){
-            User user = new User();
-            user.setRole("USER");
-            user.setVerified(false);
-            user.setPassword(passwordEncoder.encode(userRegisterDTO.getPassword()));
-            user.setName(userRegisterDTO.getName());
-            user.setSurname(userRegisterDTO.getSurname());
-            user.setEmail(userRegisterDTO.getEmail());
-            userRepository.save(user);
-            emailVerificationService.sendVerificationToken(user);
-            return true;
+    public String signUp(UserRegisterDTO userRegisterDTO) {
+        if (userRepository.findUserByEmail(userRegisterDTO.getEmail()) != null) {
+            return "email_exists";
         }
 
-        return false;
+        User user = new User();
+        user.setRole("USER");
+        user.setVerified(false);
+        user.setPassword(passwordEncoder.encode(userRegisterDTO.getPassword()));
+        user.setName(userRegisterDTO.getName());
+        user.setSurname(userRegisterDTO.getSurname());
+        user.setEmail(userRegisterDTO.getEmail());
+
+        if (!emailVerificationService.sendVerificationToken(user)) {
+            return "email_send_failed";
+        }
+
+        userRepository.save(user);
+        return "success";
     }
 }

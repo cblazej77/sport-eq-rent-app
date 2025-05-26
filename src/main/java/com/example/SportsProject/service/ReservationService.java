@@ -17,21 +17,21 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 @Service
 public class ReservationService {
 
     @Autowired
-    private JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
     private final ReservationRepository reservationRepository;
     private final UserRepository userRepository;
     private final EquipmentRepository equipmentRepository;
 
-    public ReservationService(ReservationRepository reservationRepository, UserRepository userRepository, EquipmentRepository equipmentRepository) {
+    public ReservationService(JavaMailSender mailSender, ReservationRepository reservationRepository,
+                              UserRepository userRepository, EquipmentRepository equipmentRepository) {
+        this.mailSender = mailSender;
         this.reservationRepository = reservationRepository;
         this.userRepository = userRepository;
         this.equipmentRepository = equipmentRepository;

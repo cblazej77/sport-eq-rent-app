@@ -12,12 +12,13 @@
 - images, modals style DONE
 - paging (front-end) DONE
 - sorting reservations (front-end)  DONE
-- reservation multi-lang    DONE
 - no reservations box   DONE
 - Security Config not deprecated    DONE
 - Security Config - endpoint permissions    DONE
 - controllers tests (@WebMvcTest)  DONE
+- unit tests for services  DONE
+- multi-lang    DONE
 
-- unit tests for services (category, customUserDetails, EmailVerification, Equipment, Reservation, User)   IN_PROGRESS
-
-- data for presentation
+- fix register tests
+- fix register
+- data for presentation (users, categories, equipment, reservations) IN_PROGRESS

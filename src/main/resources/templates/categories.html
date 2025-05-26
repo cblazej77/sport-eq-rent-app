@@ -19,6 +19,7 @@
         </div>
     </div>
     <div class="top-lane-account">
+        <a th:if="${user == null}" th:href="@{/sign_in}" class="nav-button" th:text="#{eq_btn_sign_in}"></a>
         <div th:if="${user != null}" style="display: flex; flex-direction: column;">
             <div style="margin-bottom: 10px;">
                 <label class="txt-white" th:text="#{nav.logged(${user.email})}"></label>
@@ -27,12 +28,12 @@
             <button class="nav-button" th:text="#{cat_btn_logout}"
                     th:onclick="window.location.href='/logout';"></button>
         </div>
-        <button th:if="${user == null}" class="nav-button" th:text="#{cat_btn_sign_in}"
-                th:onclick="window.location.href='/sign_in';"></button>
         <form method="get" action="#">
             <select style="margin-left: 5px;" name="lang" onchange="this.form.submit()">
-                <option value="en" th:selected="${#locale.language == 'en'}">EN</option>
                 <option value="pl" th:selected="${#locale.language == 'pl'}">PL</option>
+                <option value="en" th:selected="${#locale.language == 'en'}">EN</option>
+                <option value="es" th:selected="${#locale.language == 'es'}">ES</option>
+                <option value="fr" th:selected="${#locale.language == 'fr'}">FR</option>
             </select>
         </form>
     </div>

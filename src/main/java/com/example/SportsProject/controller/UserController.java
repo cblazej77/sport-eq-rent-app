@@ -55,13 +55,23 @@ public class UserController {
                          Model model) {
         if (bindingResult.hasErrors()) {
             return "sign_up";
-        } else if (userService.signUp(userRegisterDTO)) {
-            return "redirect:/sign_in?message=registered";
-        } else {
-            Locale locale = LocaleContextHolder.getLocale();
-            model.addAttribute("registerError", messageSource.getMessage("error.sign_up", null, locale));
-            return "sign_up";
         }
+
+        String result = userService.signUp(userRegisterDTO);
+
+        if ("success".equals(result)) {
+            return "redirect:/sign_in?message=registered";
+        }
+
+        Locale locale = LocaleContextHolder.getLocale();
+        String errorKey = switch (result) {
+            case "email_exists" -> "error.email_exists";
+            case "email_send_failed" -> "error.email_send";
+            default -> "error.sign_up";
+        };
+
+        model.addAttribute("registerError", messageSource.getMessage(errorKey, null, locale));
+        return "sign_up";
     }
 
     @PostMapping("/sign_in_action")

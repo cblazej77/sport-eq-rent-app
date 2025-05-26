@@ -59,7 +59,7 @@ public class UserControllerTest {
 
     @Test
     public void shouldRegisterUserSuccessfully() throws Exception {
-        when(userService.signUp(any(UserRegisterDTO.class))).thenReturn(true);
+        when(userService.signUp(any(UserRegisterDTO.class))).thenReturn("success");
 
         mockMvc.perform(post("/sign_up_action")
                         .param("email", "user@example.com")
@@ -72,7 +72,7 @@ public class UserControllerTest {
 
     @Test
     public void shouldFailRegisterUser() throws Exception {
-        when(userService.signUp(any(UserRegisterDTO.class))).thenReturn(false);
+        when(userService.signUp(any(UserRegisterDTO.class))).thenReturn("email_exists");
         when(messageSource.getMessage(Mockito.any(), Mockito.any(), Mockito.any(Locale.class))).thenReturn("Błąd rejestracji");
 
         mockMvc.perform(post("/sign_up_action")
