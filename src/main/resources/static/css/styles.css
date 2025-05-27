@@ -262,6 +262,7 @@ img {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-bottom: 200px;
 }
 
 .eq-container {
@@ -300,6 +301,15 @@ img {
     align-items: center;
     gap: 10px;
     margin-top: 20px;
+}
+
+.eq-div-paging {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding-left: 10px;
 }
 
 .ghost-div {

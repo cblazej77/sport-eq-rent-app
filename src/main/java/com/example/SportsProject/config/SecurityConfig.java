@@ -27,11 +27,18 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/sign_in")
-                        .loginProcessingUrl("/sign_in_action")
+//                        .loginProcessingUrl("/sign_in_action")
                         .defaultSuccessUrl("/categories", true)
                         .failureUrl("/sign_in?error=true")
                         .usernameParameter("email")
                         .passwordParameter("password")
+                        .failureHandler((request, response, exception) -> {
+                            if (exception instanceof org.springframework.security.authentication.DisabledException) {
+                                response.sendRedirect("/sign_in?message=not_verified");
+                            } else {
+                                response.sendRedirect("/sign_in?message=error");
+                            }
+                        })
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")

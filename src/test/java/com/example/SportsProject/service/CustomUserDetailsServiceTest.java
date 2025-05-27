@@ -30,6 +30,7 @@ class CustomUserDetailsServiceTest {
         user.setEmail(email);
         user.setPassword(password);
         user.setRole("ROLE_ADMIN");
+        user.setVerified(false);
 
         when(userRepository.findUserByEmail(email)).thenReturn(user);
 

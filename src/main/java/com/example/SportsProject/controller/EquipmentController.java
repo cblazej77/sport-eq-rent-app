@@ -63,11 +63,11 @@ public class EquipmentController {
     }
 
     @DeleteMapping("/equipment_delete/{equipmentID}")
-    public ResponseEntity<?> equipmentDelete(@PathVariable Long equipmentID){
+    public String equipmentDelete(@PathVariable Long equipmentID){
         Long categoryID = equipmentRepository.getEquipmentByEquipmentID(equipmentID).getCategory().getCategoryID();
         equipmentService.equipmentDelete(equipmentID);
 
-        return ResponseEntity.ok().build();
+        return "redirect:/categories/" + categoryID;
     }
 
     @GetMapping("/equipment/image/{equipmentID}")

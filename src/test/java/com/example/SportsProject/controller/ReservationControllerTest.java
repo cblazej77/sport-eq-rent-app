@@ -1,7 +1,9 @@
 package com.example.SportsProject.controller;
 
 import com.example.SportsProject.dto.ReservationAddDTO;
+import com.example.SportsProject.entity.Equipment;
 import com.example.SportsProject.entity.User;
+import com.example.SportsProject.repository.EquipmentRepository;
 import com.example.SportsProject.repository.UserRepository;
 import com.example.SportsProject.service.ReservationService;
 import org.junit.jupiter.api.Test;
@@ -31,6 +33,9 @@ class ReservationControllerTest {
     @MockBean
     private UserRepository userRepository;
 
+    @MockBean
+    private EquipmentRepository equipmentRepository;
+
     @WithMockUser(roles = "USER", username = "user@example.com")
     @Test
     void showReservations() throws Exception {
@@ -51,6 +56,12 @@ class ReservationControllerTest {
     @WithMockUser(roles = "ADMIN")
     @Test
     void addReservation() throws Exception {
+        Equipment equipment = new Equipment();
+        equipment.setEquipmentID(1L);
+        equipment.setQuantity(10);
+
+        when(equipmentRepository.getEquipmentByEquipmentID(1L)).thenReturn(equipment);
+
         mockMvc.perform(post("/reservations/new")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)

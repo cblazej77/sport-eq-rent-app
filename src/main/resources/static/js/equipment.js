@@ -70,11 +70,13 @@ function showReservationModal(element) {
 
     const email = element.getAttribute("data-email");
     const equipmentID = element.getAttribute("data-id");
+    const quantity = element.getAttribute("data-quantity");
 
     const reservationForm = document.getElementById('reservationForm');
     const hiddenReservationMethod = document.getElementById('hiddenReservationMethod');
     const emailInput = document.getElementById('emailInput');
     const idInput = document.getElementById('idInput');
+    const quantityInput = document.getElementById('quantityInput');
 
     reservationForm.action = "/reservations/new";
     reservationForm.method = "POST";
@@ -82,6 +84,7 @@ function showReservationModal(element) {
 
     emailInput.value = email;
     idInput.value = equipmentID;
+    quantity.max = quantity;
 
     document.getElementById('reservationModal').classList.add('active');
 }

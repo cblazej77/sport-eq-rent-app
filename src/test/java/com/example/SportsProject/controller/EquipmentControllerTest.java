@@ -17,8 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(EquipmentController.class)
 class EquipmentControllerTest {
@@ -64,7 +63,7 @@ class EquipmentControllerTest {
                         .param("categoryID", "2")
                         .with(csrf())
                         .with(request -> {
-                            request.setMethod("PUT"); // multipart domyślnie używa POST — trzeba wymusić PUT
+                            request.setMethod("PUT");
                             return request;
                         }))
                 .andExpect(status().isOk());
@@ -82,7 +81,7 @@ class EquipmentControllerTest {
 
         mockMvc.perform(delete("/equipment_delete/1")
                         .with(csrf()))
-                .andExpect(status().isOk());
+                .andExpect(redirectedUrl("/categories/1"));
     }
 
     @WithMockUser(roles = "USER")

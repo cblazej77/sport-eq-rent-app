@@ -5,9 +5,13 @@ import com.example.SportsProject.dto.ReservationDTO;
 import com.example.SportsProject.dto.UserDTO;
 import com.example.SportsProject.entity.Reservation;
 import com.example.SportsProject.entity.User;
+import com.example.SportsProject.repository.EquipmentRepository;
 import com.example.SportsProject.repository.UserRepository;
 import com.example.SportsProject.service.ReservationService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,7 +23,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,10 +33,16 @@ public class ReservationController {
 
     private final ReservationService reservationService;
     private final UserRepository userRepository;
+    private final EquipmentRepository equipmentRepository;
 
-    public ReservationController(ReservationService reservationService, UserRepository userRepository) {
+    @Autowired
+    private MessageSource messageSource;
+
+
+    public ReservationController(ReservationService reservationService, UserRepository userRepository, EquipmentRepository equipmentRepository) {
         this.reservationService = reservationService;
         this.userRepository = userRepository;
+        this.equipmentRepository = equipmentRepository;
     }
 
     @GetMapping
@@ -88,10 +97,16 @@ public class ReservationController {
     public ResponseEntity<?> addReservation(@ModelAttribute @Valid ReservationAddDTO reservationAddDTO,
                                             BindingResult bindingResult) {
 
-        if (bindingResult.hasErrors()) {
+        int maxQuantity = equipmentRepository.getEquipmentByEquipmentID(reservationAddDTO.getEquipmentID()).getQuantity();
+        if (bindingResult.hasErrors() || reservationAddDTO.getQuantity() > maxQuantity) {
             List<String> errors = bindingResult.getFieldErrors().stream()
                     .map(FieldError::getDefaultMessage)
                     .collect(Collectors.toList());
+
+            if (reservationAddDTO.getQuantity() > maxQuantity) {
+                errors.add(messageSource.getMessage("error.quantity", null, LocaleContextHolder.getLocale()));
+            }
+
             return ResponseEntity.badRequest().body(errors);
         }
 

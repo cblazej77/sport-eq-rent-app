@@ -49,6 +49,7 @@ class ReservationServiceTest {
         dto.setEquipmentID(1L);
         dto.setPickupDate(LocalDate.now());
         dto.setReturnDate(LocalDate.now().plusDays(3));
+        dto.setQuantity(2);
 
         Equipment equipment = new Equipment();
         equipment.setEquipmentID(1L);

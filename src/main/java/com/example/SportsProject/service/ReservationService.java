@@ -85,14 +85,14 @@ public class ReservationService {
         reservation.setStatus("RESERVED");
         reservation.setReservationCode("RES-" + resCodeDate + "-" + resCodeID);
         reservation.setReservationDate(localDateTime.toString());
-        reservation.setQuantity(reservation.getQuantity());
+        reservation.setQuantity(reservationAddDTO.getQuantity());
         reservation.setPickupDate(pickupDate);
         reservation.setReturnDate(returnDate);
         reservation.setUser(userRepository.findUserByEmail(reservationAddDTO.getEmail()));
         reservation.setEquipment(equipment);
-        reservation.setCost(reservation.getQuantity() * equipment.getPrice() * (daysInUse));
+        reservation.setCost(reservationAddDTO.getQuantity() * equipment.getPrice() * (daysInUse));
 
-        equipment.setQuantity(equipment.getQuantity() - 1);
+        equipment.setQuantity(equipment.getQuantity() - reservationAddDTO.getQuantity());
 
         String subject = "SportEqRent - Your reservation";
         String message = "Equipment has been reserved on " + localDateTime.format(formatter) +

@@ -5,6 +5,7 @@ import com.example.SportsProject.dto.UserRegisterDTO;
 import com.example.SportsProject.entity.User;
 import com.example.SportsProject.repository.UserRepository;
 import com.example.SportsProject.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,7 +88,9 @@ public class UserControllerTest {
 
     @Test
     public void shouldSignInSuccessfully() throws Exception {
-        when(userService.signIn(any(UserLoginDTO.class), any(AuthenticationManager.class))).thenReturn("OK");
+        when(userService.signIn(any(UserLoginDTO.class),
+                any(AuthenticationManager.class),
+                any(HttpServletRequest.class))).thenReturn("OK");
 
         mockMvc.perform(post("/sign_in_action")
                         .param("email", "user@example.com")
@@ -98,7 +101,9 @@ public class UserControllerTest {
 
     @Test
     public void shouldHandleIncorrectInput() throws Exception {
-        when(userService.signIn(any(UserLoginDTO.class), any(AuthenticationManager.class))).thenReturn("INCORRECT_INPUT");
+        when(userService.signIn(any(UserLoginDTO.class),
+                any(AuthenticationManager.class),
+                any(HttpServletRequest.class))).thenReturn("INCORRECT_INPUT");
         when(messageSource.getMessage(Mockito.any(), Mockito.any(), Mockito.any(Locale.class))).thenReturn("Nieprawidłowe dane");
 
         mockMvc.perform(post("/sign_in_action")

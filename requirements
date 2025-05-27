@@ -1,0 +1,78 @@
+1*. Użycie JPA.
+/*
+
+2*. Wsparcie dla minimum 2 języków (np. wiadomości podczas błędów walidacji, menu
+na stronie).
+/src/main/resources/Resource Bundle 'messages'/*
+
+3. Przynajmniej w jednym miejscu w projekcie stronicowanie wyświetlanych danych
+oraz możliwość wyboru ilości elementów (po stronie backend’u).
+--
+
+4. Przynajmniej jedna encja w bazie danych przechowująca daty i/lub czas i
+wykorzystanie tego w projekcie.
+/src/main/java/.../controller/ReservationController.java/addReservation()
+
+5. Przynajmniej w jednym miejscu w projekcie możliwość sortowania wyświetlanych
+danych (po stronie backend’u).
+/src/main/java/.../controller/CategoryController.java/getEquipmentByCategory()
+
+6*. Relacje OneToMany (oraz ManyToOne) przynajmniej między dwoma encjami w
+bazie (i aby były one wykorzystywane w projekcie).
+/src/main/java/.../entity/User.java
+
+7. Użycie przynajmniej raz relacji OneToOne lub ManyToMany (jedna z nich) i aby były
+one wykorzystywane w projekcie.
+--
+
+8. W przynajmniej jednym z repozytoriów użycie zapytań własnych (adnotacja @Query)
+i/lub natywnych.
+/src/main/java/.../repository/CategoryRepository.java
+
+9*. Użycie walidacji Bean Validation - bez własnych adnotacji.
+/src/main/java/.../controller/CategoryController.java/addCategory()
+/src/main/java/.../dto/CategoryAddDTO.java
+
+10. Użycie własnych adnotacji do walidacji.
+--
+
+11. Użycie jednej klasy ControllerAdvise do obsługi wyjątków oraz zwracanie wyjątków w
+przypadku braku elementu w bazie.
+--
+
+12*. FrontEnd (jeden do wyboru):
+a. Frontend przygotowany z użyciem ThymeLeaf w przypadku użycia Spring
+MVC.
+/src/main/resources/templates/*
+
+13*. Testy jednostkowe dla serwisów (i klas pomocniczych).
+/src/test/java/.../service/*
+
+14. Testowanie własnych zapytań (ewentualnie wbudowanych) przy użyciu
+@DataJpaTest.
+--
+
+15*. Rejestracja i logowanie, użytkownicy w bazie danych - Spring Security (użycie
+konfiguracji, która NIE jest “deprecated”).
+/src/main/java/.../config/SecurityConfig.java
+
+16. Potwierdzenie maila przy rejestracji.
+/src/main/java/.../controller/EmailVerificationController.java
+
+17. Możliwość zapamiętania zalogowania (“remember me”) podczas logowania.
+--
+
+18. Użycie Dockera.
+--
+
+Zagadnienia dotyczące tylko projektów używających Thymeleaf:
+19*. Dla thymeleaf - po stronie frontendu możliwość ustawiania wyświetlania stron (ile
+elementów, która strona), sortowania i zmiany języka.
+/src/main/resources/templates/equipment.html
+/src/main/resources/templates/reservations.html
+
+20*. Dla Thymeleaf - wyświetlanie błędów walidacji w widoku.
+/src/main/resources/templates/sign_up.html
+
+21*. W przypadku używania ThymeLeaf użycie @WebMvcTest do testów kontrolerów.
+/src/test/java/.../controller/*

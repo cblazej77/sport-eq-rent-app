@@ -39,7 +39,9 @@
                 duration: 10000,
                 gravity: "top",
                 position: "center",
-                background: "green"
+                style: {
+                    background: "green"
+                }
             }).showToast();
         }
         else if (urlParams.get('message') === 'verified') {
@@ -48,7 +50,31 @@
                 duration: 10000,
                 gravity: "top",
                 position: "center",
-                background: "green"
+                style: {
+                    background: "green"
+                }
+            }).showToast();
+        }
+        else if (urlParams.get('message') === 'not_verified') {
+            Toastify({
+                text: [[#{error.sign_in.unverified}]],
+                duration: 10000,
+                gravity: "top",
+                position: "center",
+                style: {
+                    background: "red"
+                }
+            }).showToast();
+        }
+        else if (urlParams.get('message') === 'error') {
+            Toastify({
+                text: [[#{error.unknown}]],
+                duration: 10000,
+                gravity: "top",
+                position: "center",
+                style: {
+                    background: "red"
+                }
             }).showToast();
         }
     }

@@ -80,12 +80,9 @@ public class UserController {
                          HttpServletRequest request,
                          Model model) {
         if (bindingResult.hasErrors()) {
-            System.out.println("bindingErrors");
             return "sign_in";
         }
-        System.out.println("before userService");
-        String signInOutput = userService.signIn(user, authenticationManager);
-        System.out.println("after userService");
+        String signInOutput = userService.signIn(user, authenticationManager, request);
         Locale locale = LocaleContextHolder.getLocale();
         switch (signInOutput) {
             case "OK" -> {
@@ -95,22 +92,18 @@ public class UserController {
                 return "redirect:/";
             }
             case "SEND_TOKEN" -> {
-                System.out.println("SEND_TOKEN");
                 model.addAttribute("loginError", messageSource.getMessage("error.sign_in.sendToken", null, locale));
                 return "sign_in";
             }
             case "NOT_VERIFIED" -> {
-                System.out.println("NOT_VERIFIED");
                 model.addAttribute("loginError", messageSource.getMessage("error.sign_in.unverified", null, locale));
                 return "sign_in";
             }
             case "INCORRECT_INPUT" -> {
-                System.out.println("INCORRECT_INPUT");
                 model.addAttribute("loginError", messageSource.getMessage("error.sign_in.input", null, locale));
                 return "sign_in";
             }
             default -> {
-                System.out.println("UNKNOWN");
                 model.addAttribute("loginError", messageSource.getMessage("error.unknown", null, locale));
                 return "sign_in";
             }

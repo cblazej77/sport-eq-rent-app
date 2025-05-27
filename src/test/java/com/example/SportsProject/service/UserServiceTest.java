@@ -7,6 +7,8 @@ import com.example.SportsProject.service.EmailVerificationService;
 import com.example.SportsProject.service.UserService;
 import com.example.SportsProject.repository.UserRepository;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,7 +54,7 @@ class UserServiceTest {
 
         when(userRepository.findUserByEmail("notfound@example.com")).thenReturn(null);
 
-        String result = userService.signIn(dto, authenticationManager);
+        String result = userService.signIn(dto, authenticationManager, any(HttpServletRequest.class));
 
         assertEquals("INCORRECT_INPUT", result);
     }
@@ -68,7 +70,7 @@ class UserServiceTest {
 
         when(userRepository.findUserByEmail("test@example.com")).thenReturn(user);
 
-        String result = userService.signIn(dto, authenticationManager);
+        String result = userService.signIn(dto, authenticationManager, any(HttpServletRequest.class));
 
         verify(emailVerificationService).sendVerificationToken(user);
         assertEquals("SEND_TOKEN", result);
@@ -85,7 +87,7 @@ class UserServiceTest {
 
         when(userRepository.findUserByEmail("test@example.com")).thenReturn(user);
 
-        String result = userService.signIn(dto, authenticationManager);
+        String result = userService.signIn(dto, authenticationManager, any(HttpServletRequest.class));
 
         verify(emailVerificationService, never()).sendVerificationToken(any());
         assertEquals("NOT_VERIFIED", result);
@@ -101,11 +103,14 @@ class UserServiceTest {
         dto.setPassword("password");
 
         Authentication auth = mock(Authentication.class);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpSession session = mock(HttpSession.class);
 
         when(userRepository.findUserByEmail("test@example.com")).thenReturn(user);
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(auth);
+        when(request.getSession(true)).thenReturn(session); // mockowanie sesji, jeśli używasz getSession(true)
 
-        String result = userService.signIn(dto, authenticationManager);
+        String result = userService.signIn(dto, authenticationManager, request);
 
         assertEquals("OK", result);
         assertEquals(auth, SecurityContextHolder.getContext().getAuthentication());
@@ -123,7 +128,7 @@ class UserServiceTest {
         when(userRepository.findUserByEmail("test@example.com")).thenReturn(user);
         when(authenticationManager.authenticate(any())).thenThrow(new AuthenticationServiceException("fail"));
 
-        String result = userService.signIn(dto, authenticationManager);
+        String result = userService.signIn(dto, authenticationManager, any(HttpServletRequest.class));
 
         assertEquals("INCORRECT_INPUT", result);
     }

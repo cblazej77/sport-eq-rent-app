@@ -73,15 +73,17 @@
         </div>
     </form>
     <div class="equipment-body">
-        <div style="margin: 1em 0;">
-            <label>Items per page:</label>
-            <select id="pageSizeSelect">
-                <option value="4" selected>4</option>
-                <option value="8">8</option>
-                <option value="12">12</option>
-            </select>
+        <div class="eq-div-paging">
+            <div>
+                <label th:text="#{eq.paging}"></label>
+                <select id="pageSizeSelect">
+                    <option value="4" selected>4</option>
+                    <option value="8">8</option>
+                    <option value="12">12</option>
+                </select>
+            </div>
+            <div id="paginationControls" class="pagination-controls"></div>
         </div>
-        <div id="paginationControls" class="pagination-controls"></div>
         <div th:if="${user != null and user.role == 'ADMIN'}" class="eq-container"
              onclick="showModal(null)" style="align-items: center; cursor: pointer;">
             <h1 style="margin: 0px;" class="txt-gray">+</h1>
@@ -170,7 +172,7 @@
             <input id="idInput" style="display: none;" name="equipmentID">
             <h2 th:text="#{reservation_modal_title}"></h2>
             <label th:text="#{res_modal_quantity}"></label>
-            <input class="modal-input" type="number" name="quantity">
+            <input id="quantityInput" class="modal-input" type="number" name="quantity">
             <label th:text="#{reservation_modal_date_pickup}"></label>
             <input class="modal-input" type="date" name="pickupDate" th:min="${minPickupDate}" th:max="${maxPickupDate}"
                    onchange="showReturnDate(this.value)">
@@ -194,6 +196,14 @@
     let currentPage = 0;
     let pageSize = parseInt(document.getElementById("pageSizeSelect").value);
 
+    const messages = {
+        edit: [[#{eq_btn_edit}]],
+        delete: [[#{eq_btn_delete}]],
+        reserve: [[#{eq_btn_reserve}]],
+        quantity: [[#{eq.quantity}]],
+        price: [[#{eq.price}]]
+    };
+
     document.getElementById("pageSizeSelect").addEventListener("change", () => {
         pageSize = parseInt(document.getElementById("pageSizeSelect").value);
         currentPage = 0;
@@ -211,7 +221,7 @@
                 <img src="/equipment/image/${eq.equipmentID}" class="eq-img">
                 <div style="width: 100%; display: flex; flex-direction: column;">
                     <label class="eq-quantity" style="align-self: flex-end;">
-                        Ilość: ${eq.quantity}
+                         ${messages.quantity} ${eq.quantity}
                     </label>
                     <h2>${eq.name}</h2>
                     <label>${eq.description}</label>
@@ -225,23 +235,24 @@
                                data-quantity="${eq.quantity}"
                                data-image="/equipment/image/${eq.equipmentID}"
                                onclick="showModal(this)">
-                                Edytuj
+                                ${messages.edit}
                             </a>
                             <form class="deleteForm" method="post" action="/equipment_delete/${eq.equipmentID}">
                                 <input type="hidden" name="_method" value="DELETE">
-                                <button type="submit">Usuń</button>
+                                <button type="submit">${messages.delete}</button>
                             </form>
                         ` : ""}
                         ${user && user.role === 'USER' && eq.quantity > 0 ? `
                             <a class="eq-btn"
                                data-id="${eq.equipmentID}"
                                data-email="${user.email}"
+                               data-quantity="${eq.quantity}"
                                onclick="showReservationModal(this)">
-                                Zarezerwuj
+                                ${messages.reserve}
                             </a>
                         ` : ""}
                         ${!user ? `<div class="ghost-div"></div>` : ""}
-                        <h2 class="eq-price">${eq.price} zł</h2>
+                        <h2 class="eq-price">${eq.price} ${messages.price}</h2>
                     </div>
                 </div>
             </div>

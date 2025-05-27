@@ -27,6 +27,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .withUsername(user.getEmail())
                 .password(user.getPassword())
                 .roles(user.getRole().toUpperCase().replace("ROLE_", ""))
+//                .disabled(!user.getVerified())
                 .build();
     }
 }

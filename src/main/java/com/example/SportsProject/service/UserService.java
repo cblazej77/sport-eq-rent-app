@@ -4,11 +4,14 @@ import com.example.SportsProject.dto.UserLoginDTO;
 import com.example.SportsProject.dto.UserRegisterDTO;
 import com.example.SportsProject.entity.User;
 import com.example.SportsProject.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,10 +34,10 @@ public class UserService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public String signIn(UserLoginDTO userLoginDTO, AuthenticationManager authenticationManager) {
+    public String signIn(UserLoginDTO userLoginDTO, AuthenticationManager authenticationManager, HttpServletRequest request) {
         User userCheck = userRepository.findUserByEmail(userLoginDTO.getEmail());
 
-        System.out.println("signIn");
+        System.out.println("signIn SERVICE");
         if (userCheck == null) {
             System.out.println("INCORRECT_INPUT");
             return "INCORRECT_INPUT";
@@ -55,12 +58,15 @@ public class UserService {
                                 userLoginDTO.getPassword()
                         )
                 );
-                System.out.println("Authentication successful!");
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                SecurityContext securityContext = SecurityContextHolder.getContext();
+                securityContext.setAuthentication(authentication);
+                HttpSession session = request.getSession(true);
+                session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
+
                 return "OK";
 
             } catch (AuthenticationException ex) {
-                System.out.println("INCORRECT_INPUT");
                 return "INCORRECT_INPUT";
             }
         }

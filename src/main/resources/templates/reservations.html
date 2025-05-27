@@ -73,7 +73,10 @@
         quantity: /*[[#{res.quantity}]]*/,
         cost: /*[[#{res.cost}]]*/,
         userFullName: /*[[#{res.userFullName}]]*/,
-        userEmail: /*[[#{res.userEmail}]]*/
+        userEmail: /*[[#{res.userEmail}]]*/,
+        btnPickup: /*[[#{res_btn_pickup}]]*/,
+        btnReturn: /*[[#{res_btn_return}]]*/,
+        btnCancel: /*[[#{res_btn_cancel}]]*/
     };
 
     function parseDate(dateStr) {
@@ -99,31 +102,69 @@
         container.innerHTML = "";
 
         list.forEach(reservation => {
+            let buttons = "";
+
+            if (user && user.role === 'ADMIN') {
+                buttons += `
+                    <form enctype="multipart/form-data" method="POST" action="/reservations/change-status">
+                        <input type="hidden" name="_method" value="PUT">
+                        <input type="hidden" name="reservationID" value="${reservation.reservationID}">
+                `;
+
+                if (reservation.status === 'RESERVED') {
+                    buttons += `<button name="status" value="IN_USE" type="submit">${mLangText.btnPickup}</button>`;
+                }
+
+                if (reservation.status === 'IN_USE') {
+                    buttons += `<button name="status" value="RETURNED" type="submit">${mLangText.btnReturn}</button>`;
+                }
+
+                if (reservation.status !== 'CANCELLED' && reservation.status !== 'RETURNED') {
+                    buttons += `<button name="status" value="CANCELLED" type="submit">${mLangText.btnCancel}</button>`;
+                }
+
+                buttons += `</form>`;
+            }
+
+            if (user && user.role === 'USER') {
+                buttons += `
+                    <form enctype="multipart/form-data" method="POST" action="/reservations/change-status">
+                        <input type="hidden" name="_method" value="PUT">
+                        <input type="hidden" name="reservationID" value="${reservation.reservationID}">
+                `;
+
+                if (reservation.status === 'RESERVED') {
+                    buttons += `<button name="status" value="CANCELLED" type="submit">${mLangText.btnCancel}</button>`;
+                }
+                buttons += `</form>`;
+            }
+
             const html = `
-            <div class="res-container">
-                <div style="display: flex; flex-direction: column;">
-                    <label style="font-weight: bold;" class="res-label">${mLangText.code} ${reservation.reservationCode}</label>
-                    <label class="res-label">${mLangText.status} ${reservation.status}</label>
-                    <label class="res-label">${mLangText.reservationDate} ${reservation.reservationDate}</label>
-                    <label class="res-label">${mLangText.pickupDate} ${reservation.pickupDate}</label>
-                    <label class="res-label">${mLangText.returnDate} ${reservation.returnDate}</label>
-                    <label class="res-label">${mLangText.quantity} ${reservation.quantity}</label>
-                    <label class="res-label">${mLangText.cost} ${reservation.cost}</label>
-                    ${user && user.role === 'ADMIN' ? `
-                        <label class="res-label">${mLangText.userFullName} ${reservation.user.name} ${reservation.user.surname}</label>
-                        <label class="res-label">${mLangText.userEmail} ${reservation.user.email}</label>` : ''}
+                <div class="res-container">
+                    <div style="display: flex; flex-direction: column;">
+                        <label class="res-label"><b>${mLangText.code}</b> ${reservation.reservationCode}</label>
+                        <label class="res-label">${mLangText.status} ${reservation.status}</label>
+                        <label class="res-label">${mLangText.reservationDate} ${reservation.reservationDate}</label>
+                        <label class="res-label">${mLangText.pickupDate} ${reservation.pickupDate}</label>
+                        <label class="res-label">${mLangText.returnDate} ${reservation.returnDate}</label>
+                        <label class="res-label">${mLangText.quantity} ${reservation.quantity}</label>
+                        <label class="res-label">${mLangText.cost} ${reservation.cost}</label>
+                        ${user && user.role === 'ADMIN' ? `
+                            <label class="res-label">${mLangText.userFullName} ${reservation.user.name} ${reservation.user.surname}</label>
+                            <label class="res-label">${mLangText.userEmail} ${reservation.user.email}</label>
+                        ` : ""}
+                        ${buttons}
+                    </div>
                 </div>
-            </div>
             `;
+
             container.innerHTML += html;
         });
     }
 
-    // Render on load
     document.addEventListener("DOMContentLoaded", () => {
         renderReservations(reservationList);
     });
-
 </script>
 </body>
 </html>
