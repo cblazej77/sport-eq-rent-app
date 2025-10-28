@@ -95,8 +95,8 @@ All critical components (services, validation, and repositories) include unit te
 ---
 
 ## Author
-Błażej Cieślewicz
-Email: blazejcie07@gmail.com
+- Błażej Cieślewicz
+- Email: blazejcie07@gmail.com
 
 ## License
 This project is licensed under the Apache License 2.0.
