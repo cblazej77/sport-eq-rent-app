@@ -1,6 +1,5 @@
 package com.example.SportsProject.entity;
 
-import com.example.SportsProject.enums.ReservationStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
